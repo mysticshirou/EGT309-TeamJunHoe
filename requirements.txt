@@ -4,3 +4,4 @@ notebook
 kedro~=1.0.0
 pandas
 matplotlib
+scipy
