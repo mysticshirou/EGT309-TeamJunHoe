@@ -8,7 +8,7 @@ data_cleaning_params:
 
 encoding_params:
   # Higher priority encoding at top
-  one_hot_encode: True
-  label_encode: False
+  one_hot_encode: False
+  label_encode: True
 
 # model_params:

@@ -108,7 +108,7 @@ def _one_hot_encode (intermediate_data: pd.DataFrame):
 def _label_encode (intermediate_data: pd.DataFrame):
     le = LabelEncoder()
     for col in intermediate_data.columns:
-        if col.dtype == "object":
+        if intermediate_data[col].dtype == "object":
             intermediate_data[col] = le.fit_transform(intermediate_data[col])
     return intermediate_data
 
