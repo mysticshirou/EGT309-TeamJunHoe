@@ -3,6 +3,15 @@
 # Documentation for this file format can be found in "The Data Catalog"
 # Link: https://docs.kedro.org/en/stable/data/data_catalog.html
 bmarket_data:
-  type: pandas.SQLTableDataset
+  type: kedro_datasets.pandas.SQLTableDataset
   table_name: bank_marketing
-  con: sqlite:///data/01_raw/bmarket.db
+  credentials:
+    con: sqlite:///data/01_raw/bmarket.db
+
+cleaned_data:
+  type: kedro_datasets.pandas.ParquetDataset
+  filepath: data/02_cleaned/preprocessed_bmarket.pq
+
+encoded_cleaned_data:
+  type: kedro_datasets.pandas.ParquetDataset
+  filepath: data/02_cleaned/preprocessed_bmarket_enc.pq

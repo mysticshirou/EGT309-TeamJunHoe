@@ -50,3 +50,6 @@ attr = "egt309_teamjunhoe.__version__"
 [tool.setuptools.packages.find]
 where = [ "src",]
 namespaces = false
+
+[tool.kedro_telemetry]
+project_id = "5bc9ea8551b04695a25d28642f018df9"
