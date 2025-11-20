@@ -1,14 +1,17 @@
 data_cleaning_params:
   # AGE
-  create_age_unk: True
-  # PERSONAL LOAN
-  personal_loan_knn_impute: True
+  create_age_unk: False
+  age_knn_impute: True
+  age_knn_impute_settings: # Keyword arguments for KNNImputer
+    n_neighbors: 2
+    weights: "distance"
+
   # PREVIOUS CONTACT DAYS
   create_previously_contacted: True
 
 encoding_params:
   # Higher priority encoding at top
-  one_hot_encode: False
-  label_encode: True
+  one_hot_encode: True
+  label_encode: False
 
 # model_params:

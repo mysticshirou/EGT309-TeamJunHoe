@@ -3,6 +3,7 @@ jupyterlab>=3.0
 notebook
 kedro~=1.0.0
 kedro-datasets
+kedro-viz
 sqlalchemy
 pandas
 matplotlib

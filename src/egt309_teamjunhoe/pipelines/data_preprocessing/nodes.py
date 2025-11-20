@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import KNNImputer
@@ -21,7 +22,18 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     # Set >90 years old to -1
     intermediate_data.age = intermediate_data.age.map(lambda x: x if x != 150 else -1)
 
-    if params.get("create_age_unk", None) == True:
+    if params.get("age_knn_impute", None) == True:
+        # Impute missing age data via KNN as per EDA
+        # Create OHE data for KNN
+        knn_ohe_data = intermediate_data.iloc[:, [0, 2, 3, 4]]
+        knn_ohe_data = pd.get_dummies(knn_ohe_data, ["occupation", "marital_status", "education_level"])
+        knn_ohe_data.age = knn_ohe_data.age.map(lambda x: x if x != -1 else np.nan)
+
+        # Impute missing values in age column
+        imputed_data = KNNImputer(**params.get("age_knn_impute_settings", {})).fit_transform(knn_ohe_data)
+        intermediate_data.age = pd.Series([x[0] for x in imputed_data])
+
+    elif params.get("create_age_unk", None) == True:
         # Create new unknown age column to show if age is unknown or not
         intermediate_data.insert(
             loc=intermediate_data.columns.get_loc("age")+1, 
@@ -120,10 +132,10 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     # Run the data through all the data cleaning functions
     # Feature Columns
     intermediate_data = _clean_initial(dataset, params)
-    intermediate_data = _clean_age_column(intermediate_data, params)
     intermediate_data = _clean_occupation_column(intermediate_data, params)
     intermediate_data = _clean_marital_column(intermediate_data, params)
     intermediate_data = _clean_education_column(intermediate_data, params)
+    intermediate_data = _clean_age_column(intermediate_data, params)
     intermediate_data = _clean_credit_column(intermediate_data, params)
     intermediate_data = _clean_contact_column(intermediate_data, params)
     intermediate_data = _clean_campaign_column(intermediate_data, params)
