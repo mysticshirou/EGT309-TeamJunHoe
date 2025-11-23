@@ -59,7 +59,8 @@ def _clean_education_column (intermediate_data: pd.DataFrame, params) -> pd.Data
     return intermediate_data
 
 def _clean_credit_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # No data cleaning needed
+    # Combine yes and no into known
+    intermediate_data.credit_default = intermediate_data.credit_default.map(lambda x: x if x == "unknown" else "known")
     return intermediate_data
 
 def _clean_contact_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
@@ -88,17 +89,20 @@ def _clean_pdays_column (intermediate_data: pd.DataFrame, params) -> pd.DataFram
     return intermediate_data
 
 def _clean_housing_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # Replace null values with -1
+    # Replace null values with missing
     intermediate_data.housing_loan = intermediate_data.housing_loan.fillna("missing")
-
-    # Label encoding (set values)
-    category_map = {"missing": -1, "no": 0, "yes": 1, "unknown": 2}
-    intermediate_data.housing_loan = intermediate_data.housing_loan.map(category_map)
     return intermediate_data
 
 def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # Not done
-
+    # Different methods based on what is chosen in parameters.yml
+    method = params.get("personal_loan_cleaning")
+    match method:
+        case "fill": 
+            intermediate_data.personal_loan = intermediate_data.personal_loan.fillna("missing")
+        case "drop":
+            intermediate_data.dropna(subset=["personal_loan"], inplace=True)
+        case "impute":
+            intermediate_data.personal_loan.fillna(intermediate_data.personal_loan.mode()[0], inplace=True)
     return intermediate_data
 
 def _clean_subscriber_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:

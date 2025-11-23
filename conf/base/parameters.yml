@@ -9,6 +9,9 @@ data_cleaning_params:
   # PREVIOUS CONTACT DAYS
   create_previously_contacted: True
 
+  # PERSONAL_LOAN (fill, drop, impute)
+  personal_loan_cleaning: "impute"
+
 encoding_params:
   # Higher priority encoding at top
   one_hot_encode: True
