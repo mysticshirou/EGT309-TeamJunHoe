@@ -23,4 +23,11 @@ encoding_params:
   one_hot_encode: True
   label_encode: False
 
-# model_params:
+model_params:
+  decision_tree_model: True
+  decision_tree_settings:
+    # Settings here
+
+  randforest_model: True
+  randforest_settings:
+    # Settings here
