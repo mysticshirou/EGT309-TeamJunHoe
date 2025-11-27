@@ -3,6 +3,8 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import KNNImputer
 from sklearn.model_selection import train_test_split
+from sklearn.utils.class_weight import compute_sample_weight
+from imblearn.under_sampling import RandomUnderSampler  
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Data Cleaning Helper Functions
@@ -46,8 +48,10 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     return intermediate_data
 
 def _clean_occupation_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # No data cleaning needed
-    intermediate_data.occupation = intermediate_data.occupation.map(lambda cat: cat.lower().replace(".", ""))
+    if params.get("generalize", None) == True:
+        intermediate_data.occupation = intermediate_data.occupation.apply(lambda x: "no" if (x == "student") \
+                                                                                        or (x == "retired") \
+                                                                                            else "yes")
     return intermediate_data
 
 def _clean_marital_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
@@ -101,7 +105,7 @@ def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataF
         case "fill": 
             intermediate_data.personal_loan = intermediate_data.personal_loan.fillna("missing")
         case "drop":
-            intermediate_data.dropna(subset=["personal_loan"], inplace=True)
+            intermediate_data.drop(labels=['personal_loan'], axis=1, inplace=True)
         case "impute":
             intermediate_data.personal_loan = intermediate_data.personal_loan.fillna(intermediate_data.personal_loan.mode()[0])
     return intermediate_data
@@ -133,16 +137,36 @@ def _label_encode (intermediate_data: pd.DataFrame):
 #   Splitting Helper Function
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def _undersampling_split(intermediate_data: pd.DataFrame, test_size):
-    X = intermediate_data.drop(columns=["subscription_status"])   # Dataset features
-    y = intermediate_data.subscription_status
-    X_train, X_test, y_train, y_test = train_test_split(X, y,
-                                                        test_size=test_size,
-                                                        shuffle=True,
-                                                        stratify=y)
-    return X_train, X_test, y_train, y_test
 
-def _stratified_split(intermediate_data: pd.DataFrame): ...
+def _undersampling_split(intermediate_data: pd.DataFrame, test_size):
+    X = intermediate_data.drop(columns=["subscription_status"])
+    y = intermediate_data.subscription_status
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=test_size,
+        shuffle=True,
+        stratify=y
+    )
+
+    # apply undersampling to training set only
+    rus = RandomUnderSampler()
+    X_train_resampled, y_train_resampled = rus.fit_resample(X_train, y_train)
+
+    return X_train_resampled, X_test, y_train_resampled, y_test
+
+def _stratified_split(intermediate_data: pd.DataFrame, test_size):
+    X = intermediate_data.drop(columns=["subscription_status"])
+    y = intermediate_data.subscription_status
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=test_size,
+        shuffle=True,
+        stratify=y
+    )
+
+    return X_train, X_test, y_train, y_test
 
 def _class_weighted_split(intermediate_data: pd.DataFrame): ...
 
@@ -183,6 +207,8 @@ def split_dataset (dataset: pd.DataFrame, params):
     test_size = params.get("test_size")
     method = params.get("imbalance_handling", None)
     match method:
+        case "stratified":
+            X_train, X_test, y_train, y_test = _stratified_split(dataset, test_size)
         case "undersampling":
             X_train, X_test, y_train, y_test = _undersampling_split(dataset, test_size)
         case _:

@@ -12,3 +12,5 @@ scipy
 scikit-learn
 pyarrow
 fastparquet
+imbalanced-learn
+xgboost

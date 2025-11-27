@@ -9,13 +9,16 @@ cleaning_params:
     n_neighbors: 2
     weights: "distance"
 
+  # OCCUPATION
+  generalize: False
+
   # PREVIOUS CONTACT DAYS
   # Create previously_contacted column (True, False)
   create_previously_contacted: True
 
   # PERSONAL_LOAN 
   # Cleaning mode for personal_loan column ('fill', 'drop', 'impute')
-  personal_loan_cleaning: "impute"
+  personal_loan_cleaning: "drop"
 
 encoding_params:
   # Options: ('ohe', 'label')
@@ -24,12 +27,12 @@ encoding_params:
 splitting_params:
   # Float value representing % of dataset to be in test split
   test_size: 0.2
-  # Options: ('undersampling', 'stratified_split', 'class_weights')
+  # Options: ('undersampling', 'stratified', 'class_weights')
   imbalance_handling: 'undersampling'
 
 model_params:
   # Selected model for training "decision_tree" | "ada_boost"
-  model_choice: "ada_boost"
+  model_choice: "xg_boost"
   decision_tree_settings:
     max_depth: 3
     random_state: 0
@@ -37,3 +40,12 @@ model_params:
   adaboost_settings:
     n_estimators: 100
     random_state: 0
+
+  xgboost_settings:
+    n_estimators: 200
+    learning_rate: 0.1
+    max_depth: 6
+    objective: "binary:logistic"
+    tree_method: "hist"
+    subsample: 0.8
+    colsample_bytree: 0.8

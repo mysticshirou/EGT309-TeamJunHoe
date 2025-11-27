@@ -39,6 +39,5 @@ evaluation_graphs:
   overwrite: True
 
 evaluation_metrics:
-  type: kedro.io.JSONDataSet
+  type: json.JSONDataset
   filepath: data/08_reporting/evaluation_metrics.json
-  overwrite: True
