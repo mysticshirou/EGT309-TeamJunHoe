@@ -19,7 +19,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=split_dataset,
-                inputs=["encode_dataset", "params:splitting_params"],
+                inputs=["encoded_cleaned_data", "params:splitting_params"],
                 outputs=["X_train", "X_test", "y_train", "y_test"],
                 name="split_dataset"
             )

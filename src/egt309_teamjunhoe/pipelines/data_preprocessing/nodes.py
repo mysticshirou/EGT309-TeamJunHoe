@@ -37,8 +37,8 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     elif params.get("create_age_unk", None) == True:
         # Create new unknown age column to show if age is unknown or not
         intermediate_data.insert(
-            loc=intermediate_data.columns.get_loc("age")+1, 
-            column="age_unk", 
+            loc=intermediate_data.columns.get_loc("age") + 1, 
+            column="age_unk",
             value=intermediate_data.age.map(lambda x: True if x == -1 else False)
         )
 
@@ -103,7 +103,7 @@ def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataF
         case "drop":
             intermediate_data.dropna(subset=["personal_loan"], inplace=True)
         case "impute":
-            intermediate_data.personal_loan.fillna(intermediate_data.personal_loan.mode()[0], inplace=True)
+            intermediate_data.personal_loan = intermediate_data.personal_loan.fillna(intermediate_data.personal_loan.mode()[0])
     return intermediate_data
 
 def _clean_subscriber_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
@@ -131,13 +131,15 @@ def _label_encode (intermediate_data: pd.DataFrame):
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Splitting Helper Function
-# -----------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _undersampling_split(intermediate_data: pd.DataFrame, test_size):
-    X_train, X_test, y_train, y_test = train_test_split(intermediate_data, 
-                                                        test_size,
+    X = intermediate_data.drop(columns=["subscription_status"])   # Dataset features
+    y = intermediate_data.subscription_status
+    X_train, X_test, y_train, y_test = train_test_split(X, y,
+                                                        test_size=test_size,
                                                         shuffle=True,
-                                                        stratify=True)
+                                                        stratify=y)
     return X_train, X_test, y_train, y_test
 
 def _stratified_split(intermediate_data: pd.DataFrame): ...
@@ -179,7 +181,11 @@ def encode_dataset (dataset: pd.DataFrame, params):
     
 def split_dataset (dataset: pd.DataFrame, params):
     test_size = params.get("test_size")
-    method = params.get("imbalance_handling")
+    method = params.get("imbalance_handling", None)
     match method:
         case "undersampling":
             X_train, X_test, y_train, y_test = _undersampling_split(dataset, test_size)
+        case _:
+            raise ValueError(f"\"{params.get('imbalance_handling'), None}\" is not a valid model choice")
+
+    return X_train, X_test, y_train, y_test

@@ -22,7 +22,8 @@ encoding_params:
   encode: "ohe"
 
 splitting_params:
-  test_size: 20
+  # Float value representing % of dataset to be in test split
+  test_size: 0.2
   # Options: ('undersampling', 'stratified_split', 'class_weights')
   imbalance_handling: 'undersampling'
 
@@ -30,10 +31,8 @@ model_params:
   # Selected model for training "decision_tree" | "ada_boost"
   model_choice: "decision_tree"
   decision_tree_settings:
-    # Settings here
-
-  randforest_settings:
-    # Settings here
+    max_depth: 3
+    random_state: 0
 
   adaboost_settings:
     n_estimators: 100
