@@ -15,3 +15,13 @@ cleaned_data:
 encoded_cleaned_data:
   type: kedro_datasets.pandas.ParquetDataset
   filepath: data/02_cleaned/preprocessed_bmarket_enc.pq
+
+trained_model:
+  type: pickle.PickleDataSet
+  filepath: data/06_models/trained_model.pickle
+  versioned: True
+
+final_model:
+  type: pickle.PickleDataSet
+  filepath: saved_models/final_model.pickle
+  versioned: True
