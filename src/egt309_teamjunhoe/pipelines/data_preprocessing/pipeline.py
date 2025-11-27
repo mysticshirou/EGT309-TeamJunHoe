@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import clean_dataset, encode_dataset
+from .nodes import clean_dataset, encode_dataset, split_dataset
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
