@@ -18,12 +18,12 @@ encoded_cleaned_data:
 
 # Models
 trained_model:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: data/06_models/trained_model.pickle
   versioned: True
 
 final_model:
-  type: pickle.PickleDataSet
+  type: pickle.PickleDataset
   filepath: saved_models/final_model.pickle
   versioned: True
 

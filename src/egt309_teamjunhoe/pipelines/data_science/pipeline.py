@@ -7,21 +7,21 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=model_choice,
-                inputs=["bmarket_data", "params:cleaning_params"],
-                outputs="cleaned_data",
-                name="clean_dataset",
+                inputs=["params:model_params"],
+                outputs="model_choice",
+                name="model_choice",
             ),
             node(
-                func=encode_dataset,
-                inputs=["cleaned_data", "params:encoding_params"],
-                outputs="encoded_cleaned_data",
-                name="encode_dataset",
+                func=model_train,
+                inputs=["model_choice", "X_train", "y_train", "params:model_params"],
+                outputs="trained_model",
+                name="model_train",
             ),
             node(
-                func=split_dataset,
-                inputs=["encode_dataset", "params:splitting_params"],
-                outputs=["X_train", "X_test", "y_train", "y_test"],
-                name="split_dataset"
+                func=model_eval,
+                inputs=["model_choice", "trained_model", "X_test", "y_test", "params:model_params"],
+                outputs="score",
+                name="model_eval"
             )
         ]
     )

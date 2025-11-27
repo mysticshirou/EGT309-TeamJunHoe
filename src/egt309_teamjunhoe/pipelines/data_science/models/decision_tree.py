@@ -1,6 +1,6 @@
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score
-from interfaces import Model
+from sklearn.metrics import accuracy_score, f1_score
+from .interfaces import Model
 from typing import Any
 
 class DecisionTree(Model):
@@ -13,4 +13,4 @@ class DecisionTree(Model):
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         y_pred = model.predict(X_test)
-        return accuracy_score(y_test, y_pred)
+        return f1_score(y_test, y_pred)

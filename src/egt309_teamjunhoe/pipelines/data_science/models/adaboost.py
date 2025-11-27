@@ -1,8 +1,8 @@
-from interfaces import Model
-
+from .interfaces import Model
+from sklearn.metrics import accuracy_score, f1_score
 from sklearn.ensemble import AdaBoostClassifier
 
-class Adaboost(Model):
+class AdaBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
         clf = AdaBoostClassifier(**params.get("adaboost_setting", dict()))
@@ -11,5 +11,5 @@ class Adaboost(Model):
     
     @staticmethod
     def eval(model, X_test, y_test, params):
-        score = model.score(X_test, y_test)
-        return score
+        y_pred = model.predict(X_test)
+        return f1_score(y_test, y_pred)
