@@ -16,6 +16,7 @@ encoded_cleaned_data:
   type: kedro_datasets.pandas.ParquetDataset
   filepath: data/02_cleaned/preprocessed_bmarket_enc.pq
 
+# Models
 trained_model:
   type: pickle.PickleDataSet
   filepath: data/06_models/trained_model.pickle
@@ -25,3 +26,19 @@ final_model:
   type: pickle.PickleDataSet
   filepath: saved_models/final_model.pickle
   versioned: True
+
+# Reporting
+training_graphs: 
+  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/training_graphs.png
+  overwrite: True
+
+evaluation_graphs:
+  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+  filepath: data/08_reporting/evaluation_graphs.png
+  overwrite: True
+
+evaluation_metrics:
+  type: kedro.io.JSONDataSet
+  filepath: data/08_reporting/evaluation_metrics.json
+  overwrite: True
