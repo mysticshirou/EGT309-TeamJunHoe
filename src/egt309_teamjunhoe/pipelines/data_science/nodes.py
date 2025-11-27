@@ -9,10 +9,10 @@ from models import adaboost
 
 def model_choice(params) -> Model:
     match params.get("model_choice", None):
-        case "decision_tree":
-            model = adaboost.AdaBoost()
         case "adaboost":
-            model = decision_tree.DecisionTree()
+            model = adaboost.Adaboost()
+        # case "adaboost":
+        #     model = d.DecisionTree()
         case _:
             raise ValueError(f"\"{params.get('model_choice'), None}\" is not a valid model choice")
 

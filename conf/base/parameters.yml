@@ -34,3 +34,7 @@ model_params:
 
   randforest_settings:
     # Settings here
+
+  adaboost_settings:
+    n_estimators: 100
+    random_state: 0
