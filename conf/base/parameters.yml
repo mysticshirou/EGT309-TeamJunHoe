@@ -1,8 +1,8 @@
-data_cleaning_params:
+cleaning_params:
   # AGE
   # Create the age_unk columns (True, False)
   create_age_unk: False
-  # Do KNN imputation to impute missing ages (True False)
+  # Do KNN imputation to impute missing ages (True, False)
   age_knn_impute: True
   age_knn_impute_settings:  
     # Keyword arguments for KNNImputer from sklearn.impute
@@ -14,14 +14,17 @@ data_cleaning_params:
   create_previously_contacted: True
 
   # PERSONAL_LOAN 
-  # Cleaning mode for personal_loan column (fill, drop, impute)
+  # Cleaning mode for personal_loan column ('fill', 'drop', 'impute')
   personal_loan_cleaning: "impute"
 
 encoding_params:
-  # Higher priority encoding at top 
-  # Whether to use specified encoding process (True, False)
-  one_hot_encode: True
-  label_encode: False
+  # Options: ('ohe', 'label')
+  encode: "ohe"
+
+splitting_params:
+  test_size: 20
+  # Options: ('undersampling', 'stratified_split', 'class_weights')
+  imbalance_handling: 'undersampling'
 
 model_params:
   # Selected model for training "decision_tree" | "ada_boost"

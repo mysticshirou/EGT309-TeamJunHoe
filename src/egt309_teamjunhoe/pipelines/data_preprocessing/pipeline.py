@@ -7,7 +7,7 @@ def create_pipeline(**kwargs) -> Pipeline:
         [
             node(
                 func=clean_dataset,
-                inputs=["bmarket_data", "params:data_cleaning_params"],
+                inputs=["bmarket_data", "params:cleaning_params"],
                 outputs="cleaned_data",
                 name="clean_dataset",
             ),
@@ -17,5 +17,11 @@ def create_pipeline(**kwargs) -> Pipeline:
                 outputs="encoded_cleaned_data",
                 name="encode_dataset",
             ),
+            node(
+                func=split_dataset,
+                inputs=["encode_dataset", "params:splitting_params"],
+                outputs=["X_train", "X_test", "y_train", "y_test"],
+                name="split_dataset"
+            )
         ]
     )

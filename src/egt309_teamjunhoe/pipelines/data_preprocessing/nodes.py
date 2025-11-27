@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import KNNImputer
+from sklearn.model_selection import train_test_split
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Data Cleaning Helper Functions
@@ -129,6 +130,21 @@ def _label_encode (intermediate_data: pd.DataFrame):
     return intermediate_data
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
+#   Splitting Helper Function
+# -----------------------------------------------------------------------------------------------------
+
+def _undersampling_split(intermediate_data: pd.DataFrame, test_size):
+    X_train, X_test, y_train, y_test = train_test_split(intermediate_data, 
+                                                        test_size,
+                                                        shuffle=True,
+                                                        stratify=True)
+    return X_train, X_test, y_train, y_test
+
+def _stratified_split(intermediate_data: pd.DataFrame): ...
+
+def _class_weighted_split(intermediate_data: pd.DataFrame): ...
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Data Cleaning Node
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -160,3 +176,10 @@ def encode_dataset (dataset: pd.DataFrame, params):
     else:
         # Default to one hot encoding
         return _one_hot_encode(dataset)
+    
+def split_dataset (dataset: pd.DataFrame, params):
+    test_size = params.get("test_size")
+    method = params.get("imbalance_handling")
+    match method:
+        case "undersampling":
+            X_train, X_test, y_train, y_test = _undersampling_split(dataset, test_size)
