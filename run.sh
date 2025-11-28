@@ -1,7 +1,7 @@
 #!/bin/bash
 IMAGE_NAME=kedro-app
 
-docker build -t $IMAGE_NAME -f Dockerfile-kedro .
+docker build --no-cache -t $IMAGE_NAME -f Dockerfile-kedro .
 
 # Mount data so that local data folder is changed
 docker run --rm \
