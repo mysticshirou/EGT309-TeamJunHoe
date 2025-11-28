@@ -32,7 +32,7 @@ splitting_params:
 
 model_params:
   # Selected model for training "decision_tree" | "ada_boost"
-  model_choice: "xg_boost"
+  model_choice: "mlp"
   decision_tree_settings:
     max_depth: 3
     random_state: 0
@@ -49,3 +49,8 @@ model_params:
     tree_method: "hist"
     subsample: 0.8
     colsample_bytree: 0.8
+
+  mlp_setting:
+    hidden_layers: [64, 64, 64]
+    lr: 0.01
+    epochs: 100 

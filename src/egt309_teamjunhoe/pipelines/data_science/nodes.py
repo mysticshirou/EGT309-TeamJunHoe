@@ -13,6 +13,8 @@ def model_choice(params) -> Model:
             model = AdaBoost()
         case "xg_boost":
             model = XGBoost()
+        case "mlp":
+            model = MLP()
         case _:
             raise ValueError(f"\"{params.get('model_choice'), None}\" is not a valid model choice")
 
