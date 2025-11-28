@@ -33,7 +33,7 @@ splitting_params:
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp"
-  model_choice: "decision_tree"
+  model_choice: "mlp"
   # Global random state seed
   random_state: 0
 

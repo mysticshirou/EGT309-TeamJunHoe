@@ -1,6 +1,10 @@
 from .interfaces import Model
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import classification_report
 import numpy as np
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class MLP(Model):
@@ -121,4 +125,12 @@ class MLP(Model):
                 a = MLP._relu(z)
 
         y_pred = np.argmax(a, axis=1)
-        return accuracy_score(y_test, y_pred)#, average="macro")
+        report = classification_report(y_test, y_pred, output_dict=True)
+
+        # Creating classification report as matplotlib plot
+        fig, ax = plt.subplots()
+        plt.figure(figsize=(8, 6))
+        sns.heatmap(pd.DataFrame(report).transpose()[['precision', 'recall', 'f1-score']], annot=True, cmap='viridis', fmt=".2f", ax=ax)
+        ax.set_title('Classification Report Heatmap for Decision Tree')
+
+        return report, fig
