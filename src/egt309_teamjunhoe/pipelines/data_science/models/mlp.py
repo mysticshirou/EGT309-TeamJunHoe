@@ -4,6 +4,7 @@ import numpy as np
 
 
 class MLP(Model):
+
     @staticmethod
     def _init_params(sizes):
         rng = np.random.default_rng()
@@ -49,10 +50,9 @@ class MLP(Model):
         X_train = np.asarray(X_train, dtype=float)
         y_train = np.asarray(y_train).reshape(-1).astype(int)
 
-        mlp_params: dict = params.get("mlp_settings", dict())
-        hidden = mlp_params.get("hidden_layers", [64])
-        lr = mlp_params.get("lr", 0.01)
-        epochs = mlp_params.get("epochs", None)
+        hidden = params.get("hidden_layers", [64])
+        lr = params.get("lr", 0.01)
+        epochs = params.get("epochs", 50)
 
         input_dim = X_train.shape[1]
         output_dim = int(np.max(y_train)) + 1
@@ -121,4 +121,4 @@ class MLP(Model):
                 a = MLP._relu(z)
 
         y_pred = np.argmax(a, axis=1)
-        return f1_score(y_test, y_pred, average='macro'), accuracy_score(y_test, y_pred)
+        return accuracy_score(y_test, y_pred)#, average="macro")

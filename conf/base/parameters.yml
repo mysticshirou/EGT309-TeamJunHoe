@@ -32,11 +32,15 @@ splitting_params:
 
 model_params:
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 764d4af (Merging latest changes)
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp"
   model_choice: "decision_tree"
   # Global random state seed
   random_state: 0
+<<<<<<< HEAD
 =======
   # Selected model for training "decision_tree" | "ada_boost" | "xg_boost" | "mlp"
   model_choice: "ada_boost"
@@ -46,6 +50,8 @@ model_params:
     class_weight: "balanced"
     random_state: 0
 >>>>>>> 2b386ea (Improved reporting by adding both f1 score and accuracy to results output)
+=======
+>>>>>>> 764d4af (Merging latest changes)
 
   # DECISION TREE
   # Use bayesian optimisation to auto select best parameters: True | False
@@ -68,6 +74,7 @@ model_params:
   # ADA BOOST
   adaboost_settings:
 <<<<<<< HEAD
+<<<<<<< HEAD
     n_estimators: 100
 =======
     n_estimators: 200
@@ -86,16 +93,21 @@ model_params:
     n_estimators: 300
     learning_rate: 0.05
     max_depth: 5
+=======
+    n_estimators: 100
+
+  # XG BOOST
+  xgboost_settings:
+    n_estimators: 200
+    learning_rate: 0.1
+    max_depth: 6
+>>>>>>> 764d4af (Merging latest changes)
     objective: "binary:logistic"
     tree_method: "hist"
     subsample: 0.8
     colsample_bytree: 0.8
-    scale_pos_weight: 7.92
-    reg_alpha: 0.1
-    reg_lambda: 1
-    random_state: 0
 
-  mlp_settings:
-    hidden_layers: [128, 128, 128]
-    lr: 0.001
-    epochs: 2000
+  mlp_setting:
+    hidden_layers: [64, 64, 64]
+    lr: 0.01
+    epochs: 100 
