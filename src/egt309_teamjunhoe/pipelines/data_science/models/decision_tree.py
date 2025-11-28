@@ -47,7 +47,7 @@ class DecisionTree(Model):
             
         
         trained_model = model.fit(X_train, y_train)
-        return trained_model
+        return trained_model, plt.figure()
 
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
@@ -56,9 +56,12 @@ class DecisionTree(Model):
         report = classification_report(y_test, y_pred, output_dict=True)
 
         # Creating classification report as matplotlib plot
+        report_df = pd.DataFrame(report).transpose()
+        print(report_df)
+        report_df = report_df.drop(columns=["accuracy", "macro avg", "weighted avg"])
         fig, ax = plt.subplots()
         plt.figure(figsize=(8, 6))
-        sns.heatmap(pd.DataFrame(report).transpose()[['precision', 'recall', 'f1-score']], annot=True, cmap='viridis', fmt=".2f", ax=ax)
+        sns.heatmap(report_df[['precision', 'recall', 'f1-score']], annot=True, cmap='viridis', fmt=".2f", ax=ax)
         ax.set_title('Classification Report Heatmap for Decision Tree')
 
         return report, fig
