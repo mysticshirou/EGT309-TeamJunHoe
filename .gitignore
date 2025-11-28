@@ -10,7 +10,7 @@ conf/local/**
 conf/**/*credentials*
 
 # ignore everything in the following folders
-# data/**
+data/**
 
 # except their sub-folders
 # !data/**/
@@ -23,9 +23,6 @@ conf/**/*credentials*
 
 # ignore file based logs
 *.log
-
-# keep trained models local
-data/06_models/*
 
 ##########################
 # Common files
