@@ -29,14 +29,16 @@ final_model:
 
 # Reporting
 training_graphs: 
-  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+  type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/training_graphs.png
-  overwrite: True
+  save_args:
+    format: png
 
 evaluation_graphs:
-  type: kedro.extras.datasets.matplotlib.MatplotlibWriter
+  type: matplotlib.MatplotlibDataset
   filepath: data/08_reporting/evaluation_graphs.png
-  overwrite: True
+  save_args:
+    format: png
 
 evaluation_metrics:
   type: json.JSONDataset

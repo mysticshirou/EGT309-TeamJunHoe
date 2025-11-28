@@ -42,7 +42,7 @@ model_params:
   decision_tree_auto_optimize: True
   decision_tree_bayes_search_settings:
     # Keyword arguments for bayesian optimisation for scikit-optimize
-    scoring: "f1"
+    # scoring: "f1"
     n_iter: 50
     cv: 5
   decision_tree_bayes_search_search_space:

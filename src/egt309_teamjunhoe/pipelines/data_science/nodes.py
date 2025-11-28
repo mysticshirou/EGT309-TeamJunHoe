@@ -25,6 +25,5 @@ def model_train(model: Model, X_train, y_train, params: dict[Any, Any]):
     return trained_model
 
 def model_eval(model: Model, trained_model: Any, X_test, y_test, params: dict[Any, Any]):
-    score = model.eval(trained_model, X_test, y_test, params)
-    print("\033[92m" + f"Score: {score}" + "\033[0m")
-    return {"score": score}
+    report, plot = model.eval(trained_model, X_test, y_test, params)
+    return report, plot
