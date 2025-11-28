@@ -10,6 +10,7 @@ matplotlib
 seaborn
 scipy
 scikit-learn
+scikit-optimize
 pyarrow
 fastparquet
 imbalanced-learn

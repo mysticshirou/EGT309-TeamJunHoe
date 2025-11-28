@@ -5,7 +5,8 @@ import xgboost as xgb
 class XGBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
-        clf = xgb.XGBClassifier(**params.get("xgboost_setting", {}))
+        clf = xgb.XGBClassifier(random_state=params.get("random_state"),
+                                **params.get("xgboost_setting", {}))
         clf.fit(X_train, y_train)
         return clf
 

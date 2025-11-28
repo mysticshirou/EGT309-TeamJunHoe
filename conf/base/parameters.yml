@@ -31,16 +31,35 @@ splitting_params:
   imbalance_handling: 'undersampling'
 
 model_params:
-  # Selected model for training "decision_tree" | "ada_boost"
-  model_choice: "mlp"
-  decision_tree_settings:
-    max_depth: 3
-    random_state: 0
+  # Selected model for training 
+  # "decision_tree" | "ada_boost" | "xg_boost" | "mlp"
+  model_choice: "decision_tree"
+  # Global random state seed
+  random_state: 0
 
+  # DECISION TREE
+  # Use bayesian optimisation to auto select best parameters: True | False
+  decision_tree_auto_optimize: True
+  decision_tree_bayes_search_settings:
+    # Keyword arguments for bayesian optimisation for scikit-optimize
+    scoring: "f1"
+    n_iter: 50
+    cv: 5
+  decision_tree_bayes_search_search_space:
+    # Search space for decision tree bayesian optimisation
+    max_depth: [1, 20]
+    min_samples_split: [2, 20]
+    min_samples_leaf: [1, 10]
+    criterion: ['gini', 'entropy']
+  decision_tree_settings:
+    # Keyword arguments for scikit-learn DecisionTreeClassifier
+    max_depth: 3
+
+  # ADA BOOST
   adaboost_settings:
     n_estimators: 100
-    random_state: 0
 
+  # XG BOOST
   xgboost_settings:
     n_estimators: 200
     learning_rate: 0.1

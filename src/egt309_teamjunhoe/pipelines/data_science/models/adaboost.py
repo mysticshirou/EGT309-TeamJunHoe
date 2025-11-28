@@ -5,7 +5,8 @@ from sklearn.ensemble import AdaBoostClassifier
 class AdaBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
-        clf = AdaBoostClassifier(**params.get("adaboost_setting", dict()))
+        clf = AdaBoostClassifier(random_state=params.get("random_state"),
+                                 **params.get("adaboost_setting", dict()))
         clf.fit(X_train, y_train)
         return clf
     
