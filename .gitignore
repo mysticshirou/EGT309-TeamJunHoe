@@ -24,6 +24,9 @@ conf/**/*credentials*
 # ignore file based logs
 *.log
 
+# keep trained models local
+data/06_models/*
+
 ##########################
 # Common files
 
