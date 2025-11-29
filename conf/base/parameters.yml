@@ -36,6 +36,9 @@ model_params:
   model_choice: "decision_tree"
   # Global random state seed
   random_state: 0
+  # Whether to save the model
+  save_model: True
+  save_model_name: "decision_tree_model"
 
   # DECISION TREE
   # Use bayesian optimisation to auto select best parameters: True | False

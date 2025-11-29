@@ -54,7 +54,7 @@ class DecisionTree(Model):
         plot_tree(trained_model.best_estimator_,
                   filled=True) 
         
-        return trained_model, fig
+        return trained_model.best_estimator_, fig
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         y_pred = model.predict(X_test)
@@ -65,7 +65,11 @@ class DecisionTree(Model):
 
         # Creating classification report as matplotlib plot
         cf_matrix = confusion_matrix(y_test, y_pred)
-        print(cf_matrix)
         fig, ax = plt.subplots(figsize=(8, 6))
-        sns.heatmap(cf_matrix, annot=True, ax=ax)
+        labels = ["False", "True"]
+        sns.heatmap(cf_matrix, annot=True, fmt="d", ax=ax)
+        ax.set_xticklabels(labels)
+        ax.set_yticklabels(labels)
+        ax.set_ylabel("Actual")
+        ax.set_xlabel("Predicted")
         return report, fig

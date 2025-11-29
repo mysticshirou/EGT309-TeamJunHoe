@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import model_choice, model_train, model_eval
+from .nodes import model_choice, model_train, model_eval, model_save
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
@@ -22,6 +22,12 @@ def create_pipeline(**kwargs) -> Pipeline:
                 inputs=["model_choice", "trained_model", "X_test", "y_test", "params:model_params"],
                 outputs=["evaluation_metrics", "evaluation_graphs"],
                 name="model_eval"
+            ),
+            node(
+                func=model_save,
+                inputs=["trained_model", "params:model_params"],
+                outputs=None,
+                name="model_save"
             )
         ]
     )
