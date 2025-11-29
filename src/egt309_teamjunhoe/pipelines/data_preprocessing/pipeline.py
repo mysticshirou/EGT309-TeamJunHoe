@@ -13,7 +13,7 @@ def create_pipeline(**kwargs) -> Pipeline:
             ),
             node(
                 func=feature_selection_dataset,
-                inputs=["clean_dataset", "params:feature_selection_params"],
+                inputs=["cleaned_data", "params:feature_selection_params"],
                 outputs="feature_selected_data",
                 name="feature_selection_dataset"
             ),

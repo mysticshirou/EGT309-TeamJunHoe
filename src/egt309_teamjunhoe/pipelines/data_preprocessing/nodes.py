@@ -124,7 +124,8 @@ def _feature_selection (intermediate_data: pd.DataFrame, params):
     ranking: list = params.get("ranking")
     top_n_features: int = params.get("top_n_features")
     selected_features = ranking[:top_n_features]
-    cols_to_drop = [col for col in intermediate_data.columns if col not in selected_features]
+    cols_to_drop = [col for col in intermediate_data.columns if \
+                    col not in selected_features and col != 'subscription_status']
     intermediate_data = intermediate_data.drop(columns=cols_to_drop)
     return intermediate_data
 
