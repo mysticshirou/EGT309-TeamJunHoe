@@ -1,6 +1,6 @@
 from kedro.pipeline import Pipeline, node, pipeline
 
-from .nodes import clean_dataset, encode_dataset, split_dataset
+from .nodes import clean_dataset, feature_selection_dataset, encode_dataset, split_dataset
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
@@ -12,8 +12,14 @@ def create_pipeline(**kwargs) -> Pipeline:
                 name="clean_dataset",
             ),
             node(
+                func=feature_selection_dataset,
+                inputs=["clean_dataset", "params:feature_selection_params"],
+                outputs="feature_selected_data",
+                name="feature_selection_dataset"
+            ),
+            node(
                 func=encode_dataset,
-                inputs=["cleaned_data", "params:encoding_params"],
+                inputs=["feature_selected_data", "params:encoding_params"],
                 outputs="encoded_cleaned_data",
                 name="encode_dataset",
             ),

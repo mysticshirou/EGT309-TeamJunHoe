@@ -117,6 +117,18 @@ def _clean_subscriber_column (intermediate_data: pd.DataFrame, params) -> pd.Dat
     return intermediate_data
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
+#   Feature selection helper function
+# -----------------------------------------------------------------------------------------------------
+
+def _feature_selection (intermediate_data: pd.DataFrame, params):
+    ranking: list = params.get("ranking")
+    top_n_features: int = params.get("top_n_features")
+    selected_features = ranking[:top_n_features]
+    cols_to_drop = [col for col in intermediate_data.columns if col not in selected_features]
+    intermediate_data = intermediate_data.drop(columns=cols_to_drop)
+    return intermediate_data
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Encoding Helper Function
 # -----------------------------------------------------------------------------------------------------
 
@@ -193,6 +205,9 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     cleaned_data = _clean_subscriber_column(intermediate_data, params)
 
     return cleaned_data
+
+def feature_selection_dataset (dataset: pd.DataFrame, params):
+    return _feature_selection(dataset, params)
 
 def encode_dataset (dataset: pd.DataFrame, params):
     encoding_type = params.get("encode")

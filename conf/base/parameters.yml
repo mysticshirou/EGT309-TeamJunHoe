@@ -18,7 +18,13 @@ cleaning_params:
 
   # PERSONAL_LOAN 
   # Cleaning mode for personal_loan column ('fill', 'drop', 'impute')
-  personal_loan_cleaning: "drop"
+  personal_loan_cleaning: "fill"
+
+feature_selection_params:
+  # Naive ranking of features made from EDA
+  ranking: ['occupation', 'contact_method', 'credit_default', 'campaign_calls', 'marital_status', 'education_level', 'age', 'housing_loan', 'personal_loan']
+  # Select top features (9 in total)
+  top_n_features: 6
 
 encoding_params:
   # Options: ('ohe', 'label', 'none')
@@ -28,7 +34,7 @@ encoding_params:
 splitting_params:
   # Float value representing % of dataset to be in test split
   test_size: 0.2
-  # Options: ('undersampling', 'stratified', 'class_weights')
+  # Options: ('undersampling', 'stratified')
   imbalance_handling: 'undersampling'
 
 model_params:
