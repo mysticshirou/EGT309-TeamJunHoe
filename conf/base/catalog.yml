@@ -33,6 +33,7 @@ training_graphs:
   filepath: data/08_reporting/training_graphs.png
   save_args:
     format: png
+    dpi: 1000
 
 evaluation_graphs:
   type: matplotlib.MatplotlibDataset

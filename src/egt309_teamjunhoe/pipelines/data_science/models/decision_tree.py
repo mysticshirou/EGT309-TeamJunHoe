@@ -1,5 +1,5 @@
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import classification_report
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import classification_report, confusion_matrix, f1_score
 from skopt.space import Integer, Categorical
 from skopt import BayesSearchCV
 
@@ -34,7 +34,8 @@ class DecisionTree(Model):
             search_space = _read_search_space(params.get("decision_tree_bayes_search_search_space", {}))
             assert len(search_space) > 0
 
-            tree = DecisionTreeClassifier(random_state=params.get("random_state"))
+            tree = DecisionTreeClassifier(random_state=params.get("random_state"),
+                                          class_weight="balanced")
             model = BayesSearchCV(
                 tree,
                 search_space,
@@ -47,21 +48,24 @@ class DecisionTree(Model):
             
         
         trained_model = model.fit(X_train, y_train)
-        return trained_model, plt.figure()
 
+        # Plot decision tree
+        fig = plt.figure(figsize=(12, 8))
+        plot_tree(trained_model.best_estimator_,
+                  filled=True) 
+        
+        return trained_model, fig
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         y_pred = model.predict(X_test)
         # Creating evaluation report
         report = classification_report(y_test, y_pred, output_dict=True)
+        report["weighted_f1_score"] = f1_score(y_test, y_pred, average="weighted")
+        report["macro_f1_score"] = f1_score(y_test, y_pred, average="macro")
 
         # Creating classification report as matplotlib plot
-        report_df = pd.DataFrame(report).transpose()
-        print(report_df)
-        report_df = report_df.drop(columns=["accuracy", "macro avg", "weighted avg"])
-        fig, ax = plt.subplots()
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(report_df[['precision', 'recall', 'f1-score']], annot=True, cmap='viridis', fmt=".2f", ax=ax)
-        ax.set_title('Classification Report Heatmap for Decision Tree')
-
+        cf_matrix = confusion_matrix(y_test, y_pred)
+        print(cf_matrix)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.heatmap(cf_matrix, annot=True, ax=ax)
         return report, fig
