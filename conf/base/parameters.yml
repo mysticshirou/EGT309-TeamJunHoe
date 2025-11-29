@@ -21,7 +21,8 @@ cleaning_params:
   personal_loan_cleaning: "drop"
 
 encoding_params:
-  # Options: ('ohe', 'label')
+  # Options: ('ohe', 'label', 'none')
+  # none should only be used for Catboost
   encode: "ohe"
 
 splitting_params:

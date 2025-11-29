@@ -195,23 +195,24 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     return cleaned_data
 
 def encode_dataset (dataset: pd.DataFrame, params):
-    if params.get("one_hot_encode", None) == True:
-        return _one_hot_encode(dataset)
-    elif params.get("label_encode", None) == True:
-        return _label_encode(dataset)
-    else:
-        # Default to one hot encoding
-        return _one_hot_encode(dataset)
+    encoding_type = params.get("encode")
+    match encoding_type:
+        case "ohe":
+            return _one_hot_encode(dataset)
+        case "label":
+            return _label_encode(dataset)
+        case "none":
+            return dataset
+        case _:
+            return _one_hot_encode(dataset)
     
 def split_dataset (dataset: pd.DataFrame, params):
     test_size = params.get("test_size")
     method = params.get("imbalance_handling", None)
     match method:
         case "stratified":
-            X_train, X_test, y_train, y_test = _stratified_split(dataset, test_size)
+            return _stratified_split(dataset, test_size)
         case "undersampling":
-            X_train, X_test, y_train, y_test = _undersampling_split(dataset, test_size)
+            return _undersampling_split(dataset, test_size)
         case _:
             raise ValueError(f"\"{params.get('imbalance_handling'), None}\" is not a valid model choice")
-
-    return X_train, X_test, y_train, y_test
