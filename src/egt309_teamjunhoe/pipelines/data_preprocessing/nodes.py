@@ -5,6 +5,7 @@ from sklearn.impute import KNNImputer
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_sample_weight
 from imblearn.under_sampling import RandomUnderSampler  
+from imblearn.over_sampling import RandomOverSampler
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Data Cleaning Helper Functions
@@ -158,7 +159,6 @@ def _undersampling_split(intermediate_data: pd.DataFrame, test_size, random_stat
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
         test_size=test_size,
-        shuffle=True,
         stratify=y,
         random_state=random_state
     )
@@ -169,6 +169,22 @@ def _undersampling_split(intermediate_data: pd.DataFrame, test_size, random_stat
 
     return X_train_resampled, X_test, y_train_resampled, y_test
 
+def _oversampling_split(intermediate_data: pd.DataFrame, test_size, random_state: int = 0, sampling_strategy: float = 1.0):
+    X = intermediate_data.drop(columns=["subscription_status"])
+    y = intermediate_data.subscription_status
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y,
+        test_size=test_size,
+        stratify=y,
+        random_state=random_state
+    )
+
+    ros = RandomOverSampler(random_state=random_state, sampling_strategy='auto')
+    X_train_resampled, y_train_resampled = ros.fit_resample(X_train, y_train)
+
+    return X_train_resampled, X_test, y_train_resampled, y_test
+
 def _stratified_split(intermediate_data: pd.DataFrame, test_size, random_state: int=0):
     X = intermediate_data.drop(columns=["subscription_status"])
     y = intermediate_data.subscription_status
@@ -176,7 +192,6 @@ def _stratified_split(intermediate_data: pd.DataFrame, test_size, random_state: 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
         test_size=test_size,
-        shuffle=True,
         stratify=y,
         random_state=random_state
     )
@@ -230,5 +245,7 @@ def split_dataset (dataset: pd.DataFrame, params):
             return _stratified_split(dataset, test_size, params.get("random_state"))
         case "undersampling":
             return _undersampling_split(dataset, test_size, params.get("random_state"), params.get('sampling_strategy'))
+        case "oversampling":
+            return _oversampling_split(dataset, test_size, params.get("random_state"))
         case _:
             raise ValueError(f"\"{params.get('imbalance_handling'), None}\" is not a valid model choice")

@@ -22,9 +22,9 @@ cleaning_params:
 
 feature_selection_params:
   # Naive ranking of features made from EDA
-  ranking: ['occupation', 'contact_method', 'credit_default', 'previously_contacted', 'campaign_calls', 'marital_status', 'education_level', 'age', 'housing_loan', 'personal_loan']
+  ranking: ['occupation', 'contact_method', 'credit_default', 'previously_contacted', 'campaign_calls', 'marital_status', 'education_level', 'age', 'age_unk', 'housing_loan', 'personal_loan']
   # Select top features
-  top_n_features: 10
+  top_n_features: 11
 
 encoding_params:
   # Options: ('ohe', 'label', 'none')
@@ -35,9 +35,9 @@ splitting_params:
   random_state: 0
   # Float value representing % of dataset to be in test split
   test_size: 0.2
-  # Options: ('undersampling', 'stratified')
-  imbalance_handling: 'undersampling'
-  sampling_strategy: 0.66
+  # Options: ('undersampling', 'stratified', 'oversampling')
+  imbalance_handling: 'oversampling'
+  sampling_strategy: 1.0
 
 model_params:
   # Selected model for training 
