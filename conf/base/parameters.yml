@@ -29,9 +29,10 @@ feature_selection_params:
 encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
-  encode: "ohe"
+  encode: "none"
 
 splitting_params:
+  random_state: 0
   # Float value representing % of dataset to be in test split
   test_size: 0.2
   # Options: ('undersampling', 'stratified')
@@ -39,13 +40,13 @@ splitting_params:
 
 model_params:
   # Selected model for training 
-  # "decision_tree" | "ada_boost" | "xg_boost" | "mlp"
-  model_choice: "decision_tree"
-  # Global random state seed
+  # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost"
+  model_choice: "cat_boost"
+  # Global random state seed for model
   random_state: 0
   # Whether to save the model
-  save_model: True
-  save_model_name: "decision_tree_model"
+  save_model: False
+  save_model_name: "cat_boost_model"
 
   # DECISION TREE
   # Use bayesian optimisation to auto select best parameters: True | False
@@ -64,6 +65,17 @@ model_params:
   decision_tree_settings:
     # Keyword arguments for scikit-learn DecisionTreeClassifier
     max_depth: 3
+
+  # CAT BOOST
+  cat_boost_settings:
+    iterations: 1000
+    depth: 8
+    learning_rate: 0.05
+    loss_function: 'Logloss'
+    eval_metric: 'AUC'
+    early_stopping_rounds: 50
+    verbose: 100
+    task_type: "CPU"
 
   # ADA BOOST
   adaboost_settings:

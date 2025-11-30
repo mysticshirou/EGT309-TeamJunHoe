@@ -15,3 +15,5 @@ pyarrow
 fastparquet
 imbalanced-learn
 xgboost
+catboost
+ipywidgets

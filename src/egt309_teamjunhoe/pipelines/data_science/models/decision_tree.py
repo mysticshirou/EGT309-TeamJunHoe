@@ -60,8 +60,6 @@ class DecisionTree(Model):
         y_pred = model.predict(X_test)
         # Creating evaluation report
         report = classification_report(y_test, y_pred, output_dict=True)
-        report["weighted_f1_score"] = f1_score(y_test, y_pred, average="weighted")
-        report["macro_f1_score"] = f1_score(y_test, y_pred, average="macro")
 
         # Creating classification report as matplotlib plot
         cf_matrix = confusion_matrix(y_test, y_pred)

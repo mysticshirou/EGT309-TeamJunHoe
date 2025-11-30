@@ -151,7 +151,7 @@ def _label_encode (intermediate_data: pd.DataFrame):
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-def _undersampling_split(intermediate_data: pd.DataFrame, test_size):
+def _undersampling_split(intermediate_data: pd.DataFrame, test_size, random_state: int=0):
     X = intermediate_data.drop(columns=["subscription_status"])
     y = intermediate_data.subscription_status
 
@@ -159,16 +159,17 @@ def _undersampling_split(intermediate_data: pd.DataFrame, test_size):
         X, y,
         test_size=test_size,
         shuffle=True,
-        stratify=y
+        stratify=y,
+        random_state=random_state
     )
 
     # apply undersampling to training set only
-    rus = RandomUnderSampler()
+    rus = RandomUnderSampler(random_state=random_state)
     X_train_resampled, y_train_resampled = rus.fit_resample(X_train, y_train)
 
     return X_train_resampled, X_test, y_train_resampled, y_test
 
-def _stratified_split(intermediate_data: pd.DataFrame, test_size):
+def _stratified_split(intermediate_data: pd.DataFrame, test_size, random_state: int=0):
     X = intermediate_data.drop(columns=["subscription_status"])
     y = intermediate_data.subscription_status
 
@@ -176,7 +177,8 @@ def _stratified_split(intermediate_data: pd.DataFrame, test_size):
         X, y,
         test_size=test_size,
         shuffle=True,
-        stratify=y
+        stratify=y,
+        random_state=random_state
     )
 
     return X_train, X_test, y_train, y_test
@@ -227,8 +229,8 @@ def split_dataset (dataset: pd.DataFrame, params):
     method = params.get("imbalance_handling", None)
     match method:
         case "stratified":
-            return _stratified_split(dataset, test_size)
+            return _stratified_split(dataset, test_size, params.get("random_state"))
         case "undersampling":
-            return _undersampling_split(dataset, test_size)
+            return _undersampling_split(dataset, test_size, params.get("random_state"))
         case _:
             raise ValueError(f"\"{params.get('imbalance_handling'), None}\" is not a valid model choice")

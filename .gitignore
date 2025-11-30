@@ -11,7 +11,8 @@ conf/**/*credentials*
 
 # ignore everything in the following folders
 data/**
-saved_models/**
+# saved_models/**
+catboost_info/**
 
 # except their sub-folders
 !data/**/

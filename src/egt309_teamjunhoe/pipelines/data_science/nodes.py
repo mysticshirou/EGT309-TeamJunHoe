@@ -18,6 +18,8 @@ def model_choice(params) -> Model:
             model = XGBoost()
         case "mlp":
             model = MLP()
+        case "cat_boost":
+            model = CatBoost()
         case _:
             raise ValueError(f"\"{params.get('model_choice'), None}\" is not a valid model choice")
 
