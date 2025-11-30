@@ -22,14 +22,14 @@ cleaning_params:
 
 feature_selection_params:
   # Naive ranking of features made from EDA
-  ranking: ['occupation', 'contact_method', 'credit_default', 'campaign_calls', 'marital_status', 'education_level', 'age', 'housing_loan', 'personal_loan']
-  # Select top features (9 in total)
-  top_n_features: 9
+  ranking: ['occupation', 'contact_method', 'credit_default', 'previously_contacted', 'campaign_calls', 'marital_status', 'education_level', 'age', 'housing_loan', 'personal_loan']
+  # Select top features
+  top_n_features: 10
 
 encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
-  encode: "ohe"
+  encode: "none"
 
 splitting_params:
   random_state: 0
@@ -38,11 +38,13 @@ splitting_params:
   # Options: ('undersampling', 'stratified')
   imbalance_handling: 'undersampling'
   sampling_strategy: 0.66
+  imbalance_handling: 'undersampling'
+  sampling_strategy: 0.66
 
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn"
-  model_choice: "knn"
+  model_choice: "cat_boost"
   # Global random state seed for model
   random_state: 0
   # Whether to save the model
