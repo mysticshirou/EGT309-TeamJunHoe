@@ -16,8 +16,12 @@ cleaning_params:
   # Create previously_contacted column (True, False)
   create_previously_contacted: True
 
+  # HOUSING_LOAN 
+  # Cleaning mode for housing_loan column ('fill', 'none')
+  housing_loan_cleaning: "fill"
+
   # PERSONAL_LOAN 
-  # Cleaning mode for personal_loan column ('fill', 'drop', 'impute')
+  # Cleaning mode for personal_loan column ('fill', 'impute', 'none')
   personal_loan_cleaning: "fill"
 
 feature_selection_params:
@@ -29,22 +33,22 @@ feature_selection_params:
 encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
-  encode: "none"
+  encode: "label"
 
 splitting_params:
   random_state: 0
   # Float value representing % of dataset to be in test split
   test_size: 0.2
   # Options: ('undersampling', 'stratified', 'oversampling')
-  imbalance_handling: 'oversampling'
+  imbalance_handling: 'undersampling'
   sampling_strategy: 1.0
 
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn"
-  model_choice: "cat_boost"
+  model_choice: "mlp"
   # Global random state seed for model
-  random_state: 0
+  random_state: 42
   # Whether to save the model
   save_model: False
   save_model_name: "mlp_model"
@@ -77,14 +81,8 @@ model_params:
     learning_rate: [0.01, 0.025, 0.05, 0.075, 0.1]
     l2_leaf_reg: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   cat_boost_settings:
-    iterations: 1000
-    depth: 10
-    learning_rate: 0.01
-    loss_function: 'Logloss'
-    eval_metric: 'AUC'
-    early_stopping_rounds: 50
-    verbose: 100
     task_type: "CPU"
+    auto_class_weights: 'SqrtBalanced'
 
   # ADA BOOST
   adaboost_settings:
@@ -107,15 +105,9 @@ model_params:
 
   # XG BOOST
   xgboost_settings:
-    n_estimators: 200
-    learning_rate: 0.1
-    max_depth: 6
-    objective: "binary:logistic"
-    tree_method: "hist"
-    subsample: 0.8
-    colsample_bytree: 0.8
+    scale_pos_weight: 1.0
 
   mlp_settings:
     hidden_layers: [128, 128, 128]
-    lr: 0.01
-    epochs: 1000 
+    lr: 0.03
+    epochs: 100
