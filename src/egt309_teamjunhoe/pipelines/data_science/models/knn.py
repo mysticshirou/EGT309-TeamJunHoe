@@ -22,7 +22,7 @@ class KNN(Model):
                 **params.get("knn_bayes_search_settings", {})
             )
         else:
-            knn = KNeighborsClassifier(**params.get("knn_settings", dict()))
+            model = KNeighborsClassifier(**params.get("knn_settings", dict()))
         model.fit(X_train, y_train)
         return model, plt.figure()
     
