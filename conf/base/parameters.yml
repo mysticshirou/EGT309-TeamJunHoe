@@ -38,8 +38,6 @@ splitting_params:
   # Options: ('undersampling', 'stratified')
   imbalance_handling: 'undersampling'
   sampling_strategy: 0.66
-  imbalance_handling: 'undersampling'
-  sampling_strategy: 0.66
 
 model_params:
   # Selected model for training 
