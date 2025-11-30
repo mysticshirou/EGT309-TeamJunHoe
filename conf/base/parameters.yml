@@ -24,7 +24,7 @@ feature_selection_params:
   # Naive ranking of features made from EDA
   ranking: ['occupation', 'contact_method', 'credit_default', 'campaign_calls', 'marital_status', 'education_level', 'age', 'housing_loan', 'personal_loan']
   # Select top features (9 in total)
-  top_n_features: 6
+  top_n_features: 9
 
 encoding_params:
   # Options: ('ohe', 'label', 'none')
@@ -36,7 +36,8 @@ splitting_params:
   # Float value representing % of dataset to be in test split
   test_size: 0.2
   # Options: ('undersampling', 'stratified')
-  imbalance_handling: 'stratified'
+  imbalance_handling: 'undersampling'
+  sampling_strategy: 0.66
 
 model_params:
   # Selected model for training 
@@ -98,7 +99,7 @@ model_params:
     cv: 3
   knn_bayes_search_search_space:
     # Search space for decision tree bayesian optimisation
-    n_neighbors: [1, 100]
+    n_neighbors: [1, 20]
     weights: ["distance", "uniform"]
   knn_settings:
     n_neighbors: 3
