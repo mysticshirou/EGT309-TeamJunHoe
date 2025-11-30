@@ -95,8 +95,12 @@ def _clean_pdays_column (intermediate_data: pd.DataFrame, params) -> pd.DataFram
     return intermediate_data
 
 def _clean_housing_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # Replace null values with missing
-    intermediate_data.housing_loan = intermediate_data.housing_loan.fillna("missing")
+    method = params.get("housing_loan_cleaning")
+    match method:
+        case "fill": 
+            intermediate_data.housing_loan = intermediate_data.housing_loan.fillna("missing")
+        case "none":
+            pass
     return intermediate_data
 
 def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
@@ -105,8 +109,8 @@ def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataF
     match method:
         case "fill": 
             intermediate_data.personal_loan = intermediate_data.personal_loan.fillna("missing")
-        case "drop":
-            intermediate_data.drop(labels=['personal_loan'], axis=1, inplace=True)
+        case "none":
+            pass
         case "impute":
             intermediate_data.personal_loan = intermediate_data.personal_loan.fillna(intermediate_data.personal_loan.mode()[0])
     return intermediate_data
