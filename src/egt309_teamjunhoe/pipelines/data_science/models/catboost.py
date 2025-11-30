@@ -1,5 +1,7 @@
 from catboost import CatBoostClassifier, Pool
+from .model_utils import read_bs_search_space
 from sklearn.metrics import classification_report, confusion_matrix
+from skopt import BayesSearchCV
 from egt309_teamjunhoe.pipelines.data_preprocessing.nodes import split_dataset
 import yaml
 import os
@@ -23,9 +25,22 @@ class CatBoost(Model):
         train_pool = Pool(X_re_train, y_re_train, cat_features=categorical_features)
         eval_pool = Pool(X_eval, y_eval, cat_features=categorical_features)
         
-        clf = CatBoostClassifier(random_state=params.get("random_state"),
-                                 **params.get("cat_boost_settings", dict()))
-        clf.fit(train_pool, eval_set=eval_pool, plot=True, use_best_model=True)
+        if params.get("cat_boost_auto_optimize") == True:
+            search_space = params.get("cat_boost_grid_search_search_space", {})
+            assert len(search_space) > 0
+
+            clf_params = params.get("cat_boost_settings", {})
+            clf = CatBoostClassifier(random_state=params.get("random_state"),
+                                     **clf_params)
+            results = clf.grid_search(search_space, train_pool)
+
+            clf = CatBoostClassifier(random_state=params.get("random_state"),
+                                     **{**clf_params, **results["params"]})
+        else:
+            clf = CatBoostClassifier(random_state=params.get("random_state"),
+                                    **params.get("cat_boost_settings", dict()))
+        
+        clf.fit(train_pool, eval_set=eval_pool, use_best_model=True)
 
         return clf, plt.figure()
     

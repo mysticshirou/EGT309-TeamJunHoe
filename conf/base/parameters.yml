@@ -67,10 +67,18 @@ model_params:
     max_depth: 3
 
   # CAT BOOST
+  cat_boost_auto_optimize: True
+  cat_boost_grid_search_settings:
+    n_iter: 50
+    cv: 5
+  cat_boost_grid_search_search_space:
+    depth: [4, 5, 6, 7, 8, 8, 9, 10]
+    learning_rate: [0.01, 0.025, 0.05, 0.075, 0.1]
+    l2_leaf_reg: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   cat_boost_settings:
     iterations: 1000
-    depth: 8
-    learning_rate: 0.05
+    # depth: 8
+    # learning_rate: 0.05
     loss_function: 'Logloss'
     eval_metric: 'AUC'
     early_stopping_rounds: 50
