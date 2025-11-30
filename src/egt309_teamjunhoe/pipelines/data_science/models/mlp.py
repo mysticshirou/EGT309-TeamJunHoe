@@ -54,6 +54,7 @@ class MLP(Model):
         X_train = np.asarray(X_train, dtype=float)
         y_train = np.asarray(y_train).reshape(-1).astype(int)
 
+        params: dict = params.get("mlp_settings")
         hidden = params.get("hidden_layers", [64])
         lr = params.get("lr", 0.01)
         epochs = params.get("epochs", 50)
@@ -109,7 +110,7 @@ class MLP(Model):
                 p[i]["W"] -= lr * grads[i]["dW"]
                 p[i]["b"] -= lr * grads[i]["db"]
 
-        return p
+        return p, plt.figure()
 
     @staticmethod
     def eval(model, X_test, y_test, params):
