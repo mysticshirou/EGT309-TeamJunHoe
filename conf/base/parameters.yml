@@ -36,13 +36,12 @@ splitting_params:
   # Float value representing % of dataset to be in test split
   test_size: 0.2
   # Options: ('undersampling', 'stratified')
-  imbalance_handling: 'undersampling'
-  sampling_strategy: 0.66
+  imbalance_handling: 'stratified'
 
 model_params:
   # Selected model for training 
-  # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost"
-  model_choice: "ada_boost"
+  # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn"
+  model_choice: "knn"
   # Global random state seed for model
   random_state: 0
   # Whether to save the model
@@ -68,7 +67,7 @@ model_params:
     max_depth: 3
 
   # CAT BOOST
-  cat_boost_auto_optimize: True
+  cat_boost_auto_optimize: False
   cat_boost_grid_search_settings:
     n_iter: 50
     cv: 5
@@ -78,8 +77,8 @@ model_params:
     l2_leaf_reg: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   cat_boost_settings:
     iterations: 1000
-    # depth: 8
-    # learning_rate: 0.05
+    depth: 10
+    learning_rate: 0.01
     loss_function: 'Logloss'
     eval_metric: 'AUC'
     early_stopping_rounds: 50
@@ -88,7 +87,22 @@ model_params:
 
   # ADA BOOST
   adaboost_settings:
-    n_estimators: 100
+    n_estimators: 1000
+    learning_rate: 0.01
+
+  # KNN
+  knn_auto_optimize: True
+  knn_bayes_search_settings:
+    # Keyword arguments for bayesian optimisation for scikit-optimize
+    n_iter: 50
+    cv: 3
+  knn_bayes_search_search_space:
+    # Search space for decision tree bayesian optimisation
+    n_neighbors: [1, 100]
+    weights: ["distance", "uniform"]
+  knn_settings:
+    n_neighbors: 3
+    weights: "distance"
 
   # XG BOOST
   xgboost_settings:

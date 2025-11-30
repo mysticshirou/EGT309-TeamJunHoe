@@ -20,6 +20,8 @@ def model_choice(params) -> Model:
             model = MLP()
         case "cat_boost":
             model = CatBoost()
+        case "knn":
+            model = KNN()
         case _:
             raise ValueError(f"\"{params.get('model_choice'), None}\" is not a valid model choice")
 

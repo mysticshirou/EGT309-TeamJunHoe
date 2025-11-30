@@ -1,5 +1,5 @@
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import classification_report, confusion_matrix, f1_score
+from sklearn.metrics import classification_report, confusion_matrix
 from skopt import BayesSearchCV
 from .model_utils import read_bs_search_space
 
