@@ -20,9 +20,12 @@ cleaning_params:
   # Cleaning mode for housing_loan column ('fill', 'none')
   housing_loan_cleaning: "fill"
 
-  # PERSONAL_LOAN 
+  # PERSONAL_LOAN
   # Cleaning mode for personal_loan column ('fill', 'impute', 'none')
   personal_loan_cleaning: "fill"
+
+  # NORMALIZATION
+  normalize: True
 
 feature_selection_params:
   # Naive ranking of features made from EDA

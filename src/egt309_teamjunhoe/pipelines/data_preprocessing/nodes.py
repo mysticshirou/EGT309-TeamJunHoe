@@ -121,6 +121,23 @@ def _clean_subscriber_column (intermediate_data: pd.DataFrame, params) -> pd.Dat
 
     return intermediate_data
 
+def _normalize_dataset(dataset: pd.DataFrame, params):
+    if params.get("normalize", None) == False:
+        return dataset
+    
+    df = dataset.copy()
+    numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+
+    for col in numeric_cols:
+        col_min = df[col].min()
+        col_max = df[col].max()
+        if col_max != col_min:
+            df[col] = (df[col] - col_min) / (col_max - col_min)
+        else:
+            df[col] = 0.0
+
+    return df
+
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Feature selection helper function
 # -----------------------------------------------------------------------------------------------------
@@ -206,7 +223,10 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     # Target Column
     cleaned_data = _clean_subscriber_column(intermediate_data, params)
 
-    return cleaned_data
+    # Normalize numeric columns
+    normalized_data = _normalize_dataset(intermediate_data, params)
+
+    return normalized_data
 
 def feature_selection_dataset (dataset: pd.DataFrame, params):
     return _feature_selection(dataset, params)
@@ -222,7 +242,8 @@ def encode_dataset (dataset: pd.DataFrame, params):
             return dataset
         case _:
             return _one_hot_encode(dataset)
-    
+
+
 def split_dataset(dataset: pd.DataFrame, params: dict):
     test_size = params.get("test_size")
     method = params.get("imbalance_handling", None)
