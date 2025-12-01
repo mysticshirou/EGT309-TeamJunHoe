@@ -16,8 +16,7 @@ class LightGBM(Model):
             search_space = read_bs_search_space(params.get("lightgbm_bayes_search_search_space", {}))
             assert len(search_space) > 0
 
-            lgbm = lgb.LGBMClassifier(random_state=params.get("random_state"),
-                                      objective=fbeta_scorer)
+            lgbm = lgb.LGBMClassifier(random_state=params.get("random_state"))
             clf = BayesSearchCV(
                 lgbm,
                 search_space,
@@ -25,12 +24,13 @@ class LightGBM(Model):
                 scoring=fbeta_scorer,
                 **params.get("lightgbm_bayes_search_settings", {})
             )
+            trained_model = clf.fit(X_train, y_train).best_estimator_
         else:
             clf = lgb.LGBMClassifier(random_state=params.get("random_state"),
-                                     objective=fbeta_scorer,
                                      **params.get("lightgbm_setting", {}))
-        clf.fit(X_train, y_train)
-        return clf, plt.figure()
+            trained_model = clf.fit(X_train, y_train)
+
+        return trained_model, plt.figure()
 
     @staticmethod
     def eval(model, X_test, y_test, params):

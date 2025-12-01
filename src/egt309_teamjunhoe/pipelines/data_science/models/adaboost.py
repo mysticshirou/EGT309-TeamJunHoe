@@ -25,11 +25,13 @@ class AdaBoost(Model):
                 scoring=fbeta_scorer,
                 **params.get("ada_boost_bayes_search_settings", {})
             )
+            trained_model = clf.fit(X_train, y_train).best_estimator_
         else:
             clf = AdaBoostClassifier(random_state=params.get("random_state"),
                                      **params.get("adaboost_setting", dict()))
-        clf.fit(X_train, y_train)
-        return clf, plt.figure()
+            trained_model = clf.fit(X_train, y_train)
+        
+        return trained_model, plt.figure()
     
     @staticmethod
     def eval(model, X_test, y_test, params):       

@@ -25,19 +25,18 @@ class DecisionTree(Model):
                 random_state=params.get("random_state"),
                 **params.get("decision_tree_bayes_search_settings", {})
             )
+            trained_model = model.fit(X_train, y_train).best_estimator_
+
+            # Plot decision tree
+            fig = plt.figure(figsize=(12, 8))
+            plot_tree(trained_model, filled=True) 
         else:
             model = DecisionTreeClassifier(random_state=params.get("random_state"), 
                                            **params.get("decision_tree_settings", {}))
-            
+            trained_model = model.fit(X_train, y_train)
+            fig = plt.figure()
         
-        trained_model = model.fit(X_train, y_train)
-
-        # Plot decision tree
-        fig = plt.figure(figsize=(12, 8))
-        plot_tree(trained_model.best_estimator_,
-                  filled=True) 
-        
-        return trained_model.best_estimator_, fig
+        return trained_model, fig
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         # Probabilities for positive class
