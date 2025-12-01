@@ -25,7 +25,7 @@ cleaning_params:
   personal_loan_cleaning: "fill"
 
   # NORMALIZATION
-  normalize: True
+  normalize: False
 
 feature_selection_params:
   # Naive ranking of features made from EDA
@@ -36,7 +36,8 @@ feature_selection_params:
 encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
-  encode: "ohe"
+  # label should be used for LightGBM
+  encode: "label"
 
 splitting_params:
   random_state: 0
@@ -104,6 +105,22 @@ model_params:
   adaboost_settings:
     n_estimators: 50
     learning_rate: 1
+
+  # LIGHTGBM
+  lightgbm_auto_optimize: False
+  lightgbm_bayes_search_settings:
+    # Keyword arguments for bayesian optimisation for scikit-optimize
+    n_iter: 50
+    cv: 5
+  lightgbm_bayes_search_search_space:
+    # Search space for adaboost bayesian optimisation
+    boosting_type: ["gbdt", "dart", "rf"]
+    num_leaves: [20, 40]    
+  lightgbm_settings:
+    boosting_type: "gbdt"
+    num_leaves: 31
+    max_depth: -1
+
 
   # KNN
   knn_auto_optimize: True
