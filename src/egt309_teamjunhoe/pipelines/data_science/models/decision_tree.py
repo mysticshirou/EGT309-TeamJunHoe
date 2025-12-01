@@ -38,7 +38,7 @@ class DecisionTree(Model):
             trained_model = model.fit(X_train, y_train)
             # fig = plt.figure()
         
-        return trained_model, trained_model
+        return trained_model, trained_model.get_params()
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         # Probabilities for positive class

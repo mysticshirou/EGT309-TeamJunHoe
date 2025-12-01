@@ -43,7 +43,7 @@ class CatBoost(Model):
         
         clf.fit(train_pool, eval_set=eval_pool, use_best_model=True)
 
-        return clf, plt.figure()
+        return clf, clf.get_all_params()
     
     @staticmethod
     def eval(model, X_test, y_test, params):

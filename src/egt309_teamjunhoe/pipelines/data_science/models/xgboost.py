@@ -13,7 +13,7 @@ class XGBoost(Model):
         clf = xgb.XGBClassifier(random_state=params.get("random_state"),
                                 **params.get("xgboost_setting", {}))
         clf.fit(X_train, y_train)
-        return clf, clf
+        return clf, clf.get_params()
     @staticmethod
     def eval(model, X_test, y_test, params):
         y_pred = model.predict(X_test)
