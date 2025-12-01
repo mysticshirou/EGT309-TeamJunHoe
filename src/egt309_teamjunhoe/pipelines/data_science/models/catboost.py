@@ -4,11 +4,13 @@ from skopt import BayesSearchCV
 from egt309_teamjunhoe.pipelines.data_preprocessing.nodes import split_dataset
 import yaml
 import os
+from .registry import register_model
 
 from .interfaces import Model
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@register_model("cat_boost")
 class CatBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):

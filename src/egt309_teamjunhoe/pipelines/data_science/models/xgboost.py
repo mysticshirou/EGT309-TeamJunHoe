@@ -1,10 +1,12 @@
 from .interfaces import Model
+from .registry import register_model
 from sklearn.metrics import f1_score, classification_report
 import xgboost as xgb
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@register_model("xg_boost")
 class XGBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):

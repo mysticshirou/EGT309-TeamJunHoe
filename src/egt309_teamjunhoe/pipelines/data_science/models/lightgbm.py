@@ -1,11 +1,13 @@
 from .interfaces import Model
 from .model_utils import read_bs_search_space, generate_report
+from .registry import register_model
 import matplotlib.pyplot as plt
 
 import lightgbm as lgb
 from skopt import BayesSearchCV
 from sklearn.metrics import make_scorer, fbeta_score
 
+@register_model("lightgbm")
 class LightGBM(Model):
     @staticmethod
     def train(X_train, y_train, params):

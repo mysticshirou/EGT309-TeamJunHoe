@@ -3,10 +3,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
 from skopt import BayesSearchCV
 from .model_utils import read_bs_search_space
+from .registry import register_model
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@register_model("knn")
 class KNN(Model):
     @staticmethod
     def train(X_train, y_train, params):

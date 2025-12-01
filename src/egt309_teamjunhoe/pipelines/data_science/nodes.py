@@ -8,26 +8,11 @@ import os
 #   Model Nodes
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def model_choice(params) -> Model:
-    match params.get("model_choice", None):
-        case "decision_tree":
-            model = DecisionTree()
-        case "ada_boost":
-            model = AdaBoost()
-        case "xg_boost":
-            model = XGBoost()
-        case "mlp":
-            model = MLP()
-        case "cat_boost":
-            model = CatBoost()
-        case "knn":
-            model = KNN()
-        case "lightgbm":
-            model = LightGBM()
-        case _:
-            raise ValueError(f"\"{params.get('model_choice'), None}\" is not a valid model choice")
-
-    return model
+def model_choice(params) -> object:
+    choice = params.get("model_choice")
+    if choice not in MODEL_REGISTRY:
+        raise ValueError(f'"{choice}" is not a valid model choice')
+    return MODEL_REGISTRY[choice]()
 
 def model_train(model: Model, X_train, y_train, params: dict[Any, Any]):
     trained_model = model.train(X_train, y_train, params)

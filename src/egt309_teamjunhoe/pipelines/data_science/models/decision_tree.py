@@ -3,12 +3,14 @@ from skopt import BayesSearchCV
 from .model_utils import read_bs_search_space, generate_report
 
 from .interfaces import Model
+from .registry import register_model
 from typing import Any
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@register_model("decision_tree")
 class DecisionTree(Model):
     @staticmethod
     def train(X_train, y_train, params: dict[Any, Any]) -> Any:

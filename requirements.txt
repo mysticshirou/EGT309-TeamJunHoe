@@ -18,3 +18,4 @@ xgboost
 catboost
 ipywidgets
 lightgbm
+ngboost

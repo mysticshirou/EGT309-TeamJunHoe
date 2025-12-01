@@ -3,10 +3,12 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.metrics import fbeta_score, make_scorer
 from skopt import BayesSearchCV
 from .model_utils import read_bs_search_space, generate_report
+from .registry import register_model
 
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+@register_model("ada_boost")
 class AdaBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
