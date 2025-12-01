@@ -52,7 +52,7 @@ model_params:
   beta: 4
   # Whether to save the model
   save_model: False
-  save_model_name: "mlp_model"
+  save_model_name: "cat_model"
 
   # DECISION TREE
   # Use bayesian optimisation to auto select best parameters: True | False
@@ -78,15 +78,15 @@ model_params:
     n_iter: 50
     cv: 5
   cat_boost_grid_search_search_space:
-    depth: [4, 5, 6, 7, 8, 8, 9, 10]
-    learning_rate: [0.01, 0.025, 0.05, 0.075, 0.1]
-    l2_leaf_reg: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    depth: [4, 5, 6, 7, 8, 9, 10]
+    learning_rate: [0.01, 0.03, 0.05]
+    l2_leaf_reg: [2, 3, 4, 5, 6, 7]
   cat_boost_settings:
     iterations: 1000
     task_type: "CPU"
     loss_function: "MultiClass"
     class_weights: [1, 4]
-    use_best_model: True
+    # use_best_model: True
 
   # ADA BOOST
   adaboost_settings:

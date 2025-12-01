@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve
+from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, fbeta_score
 
 from skopt.space import Integer, Categorical
 from typing import Any
@@ -24,29 +24,31 @@ def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
 def generate_report(y_test, y_prob, y_pred, beta):
     # Precision-Recall curve
     precision, recall, thresholds = precision_recall_curve(y_test, y_prob)
-    # Remove last element to match thresholds length
     precision = precision[:-1]
     recall = recall[:-1]
-    # F-beta computation
-    beta_sq = beta * beta
-    fbeta = (1 + beta_sq) * (precision * recall) / (
-        (beta_sq * precision) + recall + 1e-10
-    )
-    # Best threshold according to F-beta
-    best_idx = np.argmax(fbeta)
+
+    # Compute F-beta for each threshold using sklearn
+    fbeta_scores = []
+    for t in thresholds:
+        preds_t = (y_prob >= t).astype(int)
+        score = fbeta_score(y_test, preds_t, beta=beta)
+        fbeta_scores.append(score)
+    fbeta_scores = np.array(fbeta_scores)
+
+    # Find best threshold
+    best_idx = np.argmax(fbeta_scores)
     best_threshold = thresholds[best_idx]
-    # Predictions at best threshold
     y_pred_best = (y_prob >= best_threshold).astype(int)
 
-    # Classification Report
-    cls_report = classification_report(y_test, y_pred, output_dict=True)
+    # Classification report (for the original y_pred provided)
+    cls_report = classification_report(y_test, y_pred_best, output_dict=True)
 
-    # Custom report (no F1, no support)
     report = {
         "metrics": {
             "precision": precision[best_idx],
             "recall": recall[best_idx],
-            "fbeta": fbeta[best_idx]
+            "fbeta": fbeta_scores[best_idx],
+            "threshold": best_threshold
         },
         "full_cls_report": cls_report
     }

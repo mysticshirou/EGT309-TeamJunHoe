@@ -31,7 +31,7 @@ class CatBoost(Model):
             clf_params = params.get("cat_boost_settings", {})
             clf = CatBoostClassifier(random_state=params.get("random_state"),
                                      **clf_params)
-            results = clf.grid_search(search_space, train_pool)
+            results = clf.randomized_search(search_space, train_pool)
 
             clf = CatBoostClassifier(random_state=params.get("random_state"),
                                      **{**clf_params, **results["params"]})
