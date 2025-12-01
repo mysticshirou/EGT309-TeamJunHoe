@@ -49,10 +49,10 @@ splitting_params:
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn"
-  model_choice: "ada_boost"
+  model_choice: "cat_boost"
   # Global random state seed for model
   random_state: 0
-  beta: 2
+  beta: 4
   # Whether to save the model
   save_model: False
   save_model_name: "cat_model"
@@ -76,7 +76,7 @@ model_params:
     max_depth: 3
 
   # CAT BOOST
-  cat_boost_auto_optimize: False
+  cat_boost_auto_optimize: True
   cat_boost_grid_search_settings:
     n_iter: 50
     cv: 5

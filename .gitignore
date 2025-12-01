@@ -16,6 +16,7 @@ catboost_info/**
 
 # except their sub-folders
 !data/01_raw
+!data/01_raw/*
 
 # also keep all .gitkeep files
 !.gitkeep
