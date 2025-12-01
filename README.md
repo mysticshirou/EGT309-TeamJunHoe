@@ -10,20 +10,24 @@
 
 ```
 EGT309-TEAMJUNHOE
-.
 ├── conf
 │   ├── base
 │   └── local
 ├── data
 │   ├── 01_raw
-│   └── 02_cleaned
+│   ├── 02_cleaned
+│   ├── 06_models
+│   │   └── trained_model
+│   └── 08_reporting
+├── saved_models
 └── src
     └── egt309_teamjunhoe
         └── pipelines
-            └── data_preprocessing
+            ├── data_preprocessing
+            └── data_science
+                └── models
 
-11 directories
-
+17 directories
 ```
 ## Section C - Instructions
 
@@ -39,6 +43,43 @@ There are three categories of parameters:
 All editable parameters are included in the `parameters.yml` file. Possible parameter inputs are also included in the file.
 
 ## Section D - Pipeline
+
+```mermaid
+graph TD
+    start(START) --> a
+    subgraph "kedro pipeline"
+        subgraph data_preprocessing
+            a[/DATASET: bmarket_data/] --> A[NODE: clean_dataset]
+            A --> b[/DATASET: cleaned_data/]
+            A --> B[NODE: feature_selection_dataset]
+            B --> C[NODE: encode_dataset]
+            C -->|"Selected encoding option (e.g. ''ohe'')"| c[/DATASET: encoded_cleaned_data/]
+            C --> D[NODE: split_dataset]
+            D --> X_train; D --> y_train; D --> X_test; D --> y_test
+            b --> B
+            subgraph datasets
+                a; b; c
+            end
+        end
+        subgraph data_science
+            D --> E[NODE: model_choice]
+            E -->|"Selected model option (e.g. ''cat_boost'')"| F[NODE: model_train]
+            X_train --> F; y_train --> F; X_test --> F; y_test --> F
+            F --> d[/PICKLE: trained_model/]
+            F --> e[/PLOT: training_graphs/]
+            d --> G[NODE: model_eval]
+            G --> H[NODE: model_save]
+            d --> H
+            G --> g[/PLOT: evaluation_graphs/]
+            G --> h[/JSON: evaluation_metrics/]
+            subgraph reporting
+                e; g; h
+            end
+        end
+        H --> i[/PICKLE: final_model/]
+    end
+    i --> en(END)
+```
 
 ## Section E - EDA Overview
 
