@@ -1,7 +1,5 @@
 from catboost import CatBoostClassifier, Pool
-from .model_utils import read_bs_search_space
-from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve
-import numpy as np
+from .model_utils import generate_report
 from skopt import BayesSearchCV
 from egt309_teamjunhoe.pipelines.data_preprocessing.nodes import split_dataset
 import yaml
@@ -53,41 +51,10 @@ class CatBoost(Model):
         # Probabilities for positive class
         y_prob = model.predict_proba(test_pool)[:, 1]
 
-        # Precision-Recall curve
-        precision, recall, thresholds = precision_recall_curve(y_test, y_prob)
+        # Predict classes
+        y_pred = model.predict(test_pool)
 
-        # Remove last element to match thresholds length
-        precision = precision[:-1]
-        recall = recall[:-1]
-
-        beta = params.get("beta")
-
-        # F-beta computation
-        beta_sq = beta * beta
-        fbeta = (1 + beta_sq) * (precision * recall) / (
-            (beta_sq * precision) + recall + 1e-10
-        )
-
-        # Best threshold according to F-beta
-        best_idx = np.argmax(fbeta)
-        best_threshold = thresholds[best_idx]
-
-        # Predictions at best threshold
-        y_pred_best = (y_prob >= best_threshold).astype(int)
-
-        # Custom report (no F1, no support)
-        report = {
-            "precision": precision[best_idx],
-            "recall": recall[best_idx],
-            "fbeta": fbeta[best_idx]
-        }
-
-        # Plot precision-recall curve
-        fig, ax = plt.subplots(figsize=(8, 6))
-        ax.plot(recall, precision)
-        ax.set_xlabel("Recall")
-        ax.set_ylabel("Precision")
-        ax.set_title(f"Precision-Recall Curve (β={beta})")
+        report, fig = generate_report(y_test, y_prob, y_pred, params.get("beta"))
 
         return report, fig
 

@@ -40,7 +40,7 @@ def model_save(trained_model: Any, params: dict[Any, Any]):
     if params.get("save_model") == True:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"{params.get("save_model_name", "model")}_{timestamp}.pickle"
-        path = os.path.join("saved_models", filename)
+        path = os.path.join("saved_models", params.get("save_model_name", "model"), filename)
         pickler = PickleDataset(filepath=path, backend="pickle")
         pickler.save(trained_model)
 
