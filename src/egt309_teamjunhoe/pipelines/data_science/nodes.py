@@ -22,6 +22,8 @@ def model_choice(params) -> Model:
             model = CatBoost()
         case "knn":
             model = KNN()
+        case "lightgbm":
+            model = LightGBM()
         case _:
             raise ValueError(f"\"{params.get('model_choice'), None}\" is not a valid model choice")
 

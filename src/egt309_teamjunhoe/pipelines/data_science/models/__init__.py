@@ -4,4 +4,5 @@ from .xgboost import *
 from .mlp import *
 from .catboost import *
 from .knn import *
+from .lightgbm import *
 from .interfaces import *
