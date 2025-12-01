@@ -28,7 +28,7 @@ class LightGBM(Model):
                                      **params.get("lightgbm_setting", {}))
             trained_model = clf.fit(X_train, y_train)
 
-        return trained_model, trained_model
+        return trained_model, trained_model.booster_.dump_model()
 
     @staticmethod
     def eval(model, X_test, y_test, params):
