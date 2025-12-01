@@ -33,7 +33,7 @@ feature_selection_params:
 encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
-  encode: "none"
+  encode: "ohe"
 
 splitting_params:
   random_state: 0
@@ -46,10 +46,10 @@ splitting_params:
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn"
-  model_choice: "cat_boost"
+  model_choice: "ada_boost"
   # Global random state seed for model
   random_state: 0
-  beta: 4
+  beta: 2
   # Whether to save the model
   save_model: False
   save_model_name: "cat_model"
@@ -89,9 +89,18 @@ model_params:
     # use_best_model: True
 
   # ADA BOOST
+  ada_boost_auto_optimize: False
+  ada_boost_bayes_search_settings:
+    # Keyword arguments for bayesian optimisation for scikit-optimize
+    n_iter: 50
+    cv: 5
+  ada_boost_bayes_search_search_space:
+    # Search space for adaboost bayesian optimisation
+    n_estimators: [50, 60]
+    learning_rate: [0.9, 1.0]
   adaboost_settings:
-    n_estimators: 1000
-    learning_rate: 0.01
+    n_estimators: 50
+    learning_rate: 1
 
   # KNN
   knn_auto_optimize: True

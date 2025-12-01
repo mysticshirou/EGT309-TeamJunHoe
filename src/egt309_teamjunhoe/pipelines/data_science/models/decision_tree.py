@@ -1,7 +1,6 @@
 from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import classification_report, confusion_matrix
 from skopt import BayesSearchCV
-from .model_utils import read_bs_search_space
+from .model_utils import read_bs_search_space, generate_report
 
 from .interfaces import Model
 from typing import Any
@@ -41,17 +40,11 @@ class DecisionTree(Model):
         return trained_model.best_estimator_, fig
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
+        # Probabilities for positive class
+        y_prob = model.predict_proba(X_test)[:, 1]
+        # Predict classes
         y_pred = model.predict(X_test)
-        # Creating evaluation report
-        report = classification_report(y_test, y_pred, output_dict=True)
 
-        # Creating classification report as matplotlib plot
-        cf_matrix = confusion_matrix(y_test, y_pred)
-        fig, ax = plt.subplots(figsize=(8, 6))
-        labels = ["False", "True"]
-        sns.heatmap(cf_matrix, annot=True, fmt="d", ax=ax)
-        ax.set_xticklabels(labels)
-        ax.set_yticklabels(labels)
-        ax.set_ylabel("Actual")
-        ax.set_xlabel("Predicted")
+        report, fig = generate_report(y_test, y_prob, y_pred, params.get("beta"))
+
         return report, fig

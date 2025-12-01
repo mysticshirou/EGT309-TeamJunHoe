@@ -1,8 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, fbeta_score
+import seaborn as sns
 
-from skopt.space import Integer, Categorical
+from skopt.space import Integer, Categorical, Real
 from typing import Any
 
 def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
@@ -16,6 +17,9 @@ def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
             # Length of item list should be 2 if integer and index 0 < index 1
             assert len(item) == 2 and item[0] < item[1]
             search_space[key] = Integer(item[0], item[1])
+        elif isinstance(item[0], float):
+            assert len(item) == 2 and item[0] < item[1]
+            search_space[key] = Real(item[0], item[1])
         elif isinstance(item[0], str):
             search_space[key] = Categorical(item)
 
@@ -40,8 +44,9 @@ def generate_report(y_test, y_prob, y_pred, beta):
     best_threshold = thresholds[best_idx]
     y_pred_best = (y_prob >= best_threshold).astype(int)
 
-    # Classification report (for the original y_pred provided)
-    cls_report = classification_report(y_test, y_pred_best, output_dict=True)
+    # Classification Report
+    cls_report = classification_report(y_test, y_pred, output_dict=True)
+    cls_best_report = classification_report(y_test, y_pred_best, output_dict=True)
 
     report = {
         "metrics": {
@@ -50,14 +55,23 @@ def generate_report(y_test, y_prob, y_pred, beta):
             "fbeta": fbeta_scores[best_idx],
             "threshold": best_threshold
         },
-        "full_cls_report": cls_report
+        "full_cls_report": cls_report,
+        "best_cls_report": cls_best_report
     }
 
+    fig, ax = plt.subplots(1, 2, figsize=(10, 6))
     # Plot precision-recall curve
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.plot(recall, precision)
-    ax.set_xlabel("Recall")
-    ax.set_ylabel("Precision")
-    ax.set_title(f"Precision-Recall Curve (β={beta})")
+    ax[0].plot(recall, precision)
+    ax[0].set_xlabel("Recall")
+    ax[0].set_ylabel("Precision")
+    ax[0].set_title(f"Precision-Recall Curve (β={beta})")
+    # Plot confusion matrix
+    cf_matrix = confusion_matrix(y_test, y_pred_best)
+    sns.heatmap(cf_matrix, annot=True, fmt="d", ax=ax[1])
+    labels = ["False", "True"]
+    ax[1].set_xticklabels(labels)
+    ax[1].set_yticklabels(labels)
+    ax[1].set_ylabel("Actual")
+    ax[1].set_xlabel("Predicted")
 
     return report, fig

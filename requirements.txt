@@ -17,3 +17,4 @@ imbalanced-learn
 xgboost
 catboost
 ipywidgets
+lightgbm

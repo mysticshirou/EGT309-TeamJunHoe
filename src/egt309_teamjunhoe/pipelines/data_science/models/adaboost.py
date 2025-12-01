@@ -1,6 +1,8 @@
 from .interfaces import Model
-from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import fbeta_score, make_scorer
+from skopt import BayesSearchCV
+from .model_utils import read_bs_search_space, generate_report
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -8,24 +10,34 @@ import seaborn as sns
 class AdaBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
-        clf = AdaBoostClassifier(random_state=params.get("random_state"),
-                                 **params.get("adaboost_setting", dict()))
+        if params.get("ada_boost_auto_optimize") == True:
+            search_space = read_bs_search_space(params.get("ada_boost_bayes_search_search_space", {}))
+            assert len(search_space) > 0
+
+            # Create scorer for model
+            fbeta_scorer = make_scorer(fbeta_score, beta=params.get("beta"))
+
+            ada = AdaBoostClassifier(random_state=params.get("random_state"))
+            clf = BayesSearchCV(
+                ada,
+                search_space,
+                random_state=params.get("random_state"),
+                scoring=fbeta_scorer,
+                **params.get("ada_boost_bayes_search_settings", {})
+            )
+        else:
+            clf = AdaBoostClassifier(random_state=params.get("random_state"),
+                                     **params.get("adaboost_setting", dict()))
         clf.fit(X_train, y_train)
         return clf, plt.figure()
     
     @staticmethod
-    def eval(model, X_test, y_test, params):
+    def eval(model, X_test, y_test, params):       
+        # Probabilities for positive class
+        y_prob = model.predict_proba(X_test)[:, 1]
+        # Predict classes
         y_pred = model.predict(X_test)
-        report = classification_report(y_test, y_pred, output_dict=True)
 
-        # Creating classification report as matplotlib plot
-        cf_matrix = confusion_matrix(y_test, y_pred)
-        fig, ax = plt.subplots(figsize=(8, 6))
-        labels = ["False", "True"]
-        sns.heatmap(cf_matrix, annot=True, fmt="d", ax=ax)
-        ax.set_xticklabels(labels)
-        ax.set_yticklabels(labels)
-        ax.set_ylabel("Actual")
-        ax.set_xlabel("Predicted")
+        report, fig = generate_report(y_test, y_prob, y_pred, params.get("beta"))
 
         return report, fig
