@@ -156,7 +156,15 @@ def _label_encode (intermediate_data: pd.DataFrame):
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-def _undersampling_split(intermediate_data: pd.DataFrame, test_size, random_state: int=0, sampling_strategy: float=1.0):
+def _resampled_split(
+    intermediate_data: pd.DataFrame,
+    test_size: float,
+    random_state: int = 0,
+    sampling: str = None,
+    sampling_strategy: float = 1.0
+):
+    intermediate_data = intermediate_data.sample(frac=1, random_state=random_state).reset_index(drop=True)
+    
     X = intermediate_data.drop(columns=["subscription_status"])
     y = intermediate_data.subscription_status
 
@@ -167,38 +175,12 @@ def _undersampling_split(intermediate_data: pd.DataFrame, test_size, random_stat
         random_state=random_state
     )
 
-    # apply undersampling to training set only
-    rus = RandomUnderSampler(random_state=random_state, sampling_strategy=sampling_strategy)
-    X_train_resampled, y_train_resampled = rus.fit_resample(X_train, y_train)
-
-    return X_train_resampled, X_test, y_train_resampled, y_test
-
-def _oversampling_split(intermediate_data: pd.DataFrame, test_size, random_state: int = 0, sampling_strategy: float = 1.0):
-    X = intermediate_data.drop(columns=["subscription_status"])
-    y = intermediate_data.subscription_status
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
-        test_size=test_size,
-        stratify=y,
-        random_state=random_state
-    )
-
-    ros = RandomOverSampler(random_state=random_state, sampling_strategy='auto')
-    X_train_resampled, y_train_resampled = ros.fit_resample(X_train, y_train)
-
-    return X_train_resampled, X_test, y_train_resampled, y_test
-
-def _stratified_split(intermediate_data: pd.DataFrame, test_size, random_state: int=0):
-    X = intermediate_data.drop(columns=["subscription_status"])
-    y = intermediate_data.subscription_status
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
-        test_size=test_size,
-        stratify=y,
-        random_state=random_state
-    )
+    if sampling == 'under':
+        sampler = RandomUnderSampler(random_state=random_state, sampling_strategy=sampling_strategy)
+        X_train, y_train = sampler.fit_resample(X_train, y_train)
+    elif sampling == 'over':
+        sampler = RandomOverSampler(random_state=random_state, sampling_strategy='auto')
+        X_train, y_train = sampler.fit_resample(X_train, y_train)
 
     return X_train, X_test, y_train, y_test
 
@@ -241,15 +223,31 @@ def encode_dataset (dataset: pd.DataFrame, params):
         case _:
             return _one_hot_encode(dataset)
     
-def split_dataset (dataset: pd.DataFrame, params):
+def split_dataset(dataset: pd.DataFrame, params: dict):
     test_size = params.get("test_size")
     method = params.get("imbalance_handling", None)
+    random_state = params.get("random_state", 0)
+    sampling_strategy = params.get("sampling_strategy", 1.0)
+
     match method:
-        case "stratified":
-            return _stratified_split(dataset, test_size, params.get("random_state"))
+        case "stratified" | None:
+            # no resampling
+            return _resampled_split(dataset, test_size, random_state=random_state, sampling=None)
         case "undersampling":
-            return _undersampling_split(dataset, test_size, params.get("random_state"), params.get('sampling_strategy'))
+            return _resampled_split(
+                dataset,
+                test_size,
+                random_state=random_state,
+                sampling="under",
+                sampling_strategy=sampling_strategy
+            )
         case "oversampling":
-            return _oversampling_split(dataset, test_size, params.get("random_state"))
+            return _resampled_split(
+                dataset,
+                test_size,
+                random_state=random_state,
+                sampling="over"
+            )
         case _:
-            raise ValueError(f"\"{params.get('imbalance_handling'), None}\" is not a valid model choice")
+            raise ValueError(f'"{method}" is not a valid imbalance handling choice')
+
