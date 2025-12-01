@@ -33,7 +33,7 @@ class AdaBoost(Model):
                                      **params.get("adaboost_setting", dict()))
             trained_model = clf.fit(X_train, y_train)
         
-        return trained_model, plt.figure()
+        return trained_model, trained_model
     
     @staticmethod
     def eval(model, X_test, y_test, params):       

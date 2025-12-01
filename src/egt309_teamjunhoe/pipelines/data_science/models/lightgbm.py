@@ -11,9 +11,6 @@ from sklearn.metrics import make_scorer, fbeta_score
 class LightGBM(Model):
     @staticmethod
     def train(X_train, y_train, params):
-        # Create scorer for model
-        fbeta_scorer = make_scorer(fbeta_score, beta=params.get("beta"))
-
         if params.get("lightgbm_auto_optimize") == True:
             search_space = read_bs_search_space(params.get("lightgbm_bayes_search_search_space", {}))
             assert len(search_space) > 0
@@ -23,7 +20,6 @@ class LightGBM(Model):
                 lgbm,
                 search_space,
                 random_state=params.get("random_state"),
-                scoring=fbeta_scorer,
                 **params.get("lightgbm_bayes_search_settings", {})
             )
             trained_model = clf.fit(X_train, y_train).best_estimator_
@@ -32,7 +28,7 @@ class LightGBM(Model):
                                      **params.get("lightgbm_setting", {}))
             trained_model = clf.fit(X_train, y_train)
 
-        return trained_model, plt.figure()
+        return trained_model, trained_model
 
     @staticmethod
     def eval(model, X_test, y_test, params):

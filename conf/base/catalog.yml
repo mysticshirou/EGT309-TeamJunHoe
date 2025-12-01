@@ -33,7 +33,10 @@ training_graphs:
   filepath: data/08_reporting/training_graphs.png
   save_args:
     format: png
-    dpi: 1000
+
+training_model_parameters:
+  type: json.JSONDataset
+  filepath: data/08_reporting/model_parameters.json
 
 evaluation_graphs:
   type: matplotlib.MatplotlibDataset

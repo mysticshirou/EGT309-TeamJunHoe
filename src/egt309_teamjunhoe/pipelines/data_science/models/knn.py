@@ -26,7 +26,7 @@ class KNN(Model):
         else:
             model = KNeighborsClassifier(**params.get("knn_settings", dict()))
         model.fit(X_train, y_train)
-        return model, plt.figure()
+        return model, model
     
     @staticmethod
     def eval(model, X_test, y_test, params):

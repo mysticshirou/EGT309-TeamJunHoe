@@ -29,16 +29,16 @@ class DecisionTree(Model):
             )
             trained_model = model.fit(X_train, y_train).best_estimator_
 
-            # Plot decision tree
-            fig = plt.figure(figsize=(12, 8))
-            plot_tree(trained_model, filled=True) 
+            # # Plot decision tree # NOT NEEDED ANYMORE
+            # fig = plt.figure(figsize=(12, 8))
+            # plot_tree(trained_model, filled=True) 
         else:
             model = DecisionTreeClassifier(random_state=params.get("random_state"), 
                                            **params.get("decision_tree_settings", {}))
             trained_model = model.fit(X_train, y_train)
-            fig = plt.figure()
+            # fig = plt.figure()
         
-        return trained_model, fig
+        return trained_model, trained_model
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         # Probabilities for positive class
