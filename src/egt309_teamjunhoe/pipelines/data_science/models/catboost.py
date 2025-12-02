@@ -56,7 +56,7 @@ class CatBoost(Model):
         # Predict classes
         y_pred = model.predict(test_pool)
 
-        report, fig = generate_report(y_test, y_prob, y_pred, params.get("beta"))
+        report, fig = generate_report(y_test, y_prob, params)
 
         return report, fig
 

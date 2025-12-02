@@ -4,7 +4,7 @@ model_params:
   model_choice: "cat_boost"
   # Global random state seed for model
   random_state: 0
-  beta: 2.5
+  alpha: 0.7
   # Whether to save the model
   save_model: False
   save_model_name: "cat_model"
@@ -40,7 +40,7 @@ model_params:
     iterations: 1000
     task_type: "CPU"
     loss_function: "MultiClass"
-    class_weights: [1, 4]
+    class_weights: [1, 2.5]
     # use_best_model: True
 
   # ADA BOOST
