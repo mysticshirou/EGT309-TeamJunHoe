@@ -18,7 +18,7 @@ class CatBoost(Model):
         combined_df[y_train.name] = y_train
 
         # Split the training dataset into train and validation so we can evaluate best model 
-        with open(os.path.join(os.getcwd(), "conf", "base", "parameters.yml"), "r") as yaml_file:
+        with open(os.path.join(os.getcwd(), "conf", "base", "parameters_datapreprocessing.yml"), "r") as yaml_file:
             split_parameters = yaml.safe_load(yaml_file)["splitting_params"]
 
         X_re_train, X_eval, y_re_train, y_eval = split_dataset(combined_df, split_parameters)   
