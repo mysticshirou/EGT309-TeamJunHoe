@@ -29,8 +29,8 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     if params.get("age_knn_impute", None) == True:
         # Impute missing age data via KNN as per EDA
         # Create OHE data for KNN
-        knn_ohe_data = intermediate_data.iloc[:, [0, 2, 3, 4]]
-        knn_ohe_data = pd.get_dummies(knn_ohe_data, ["occupation", "marital_status", "education_level"])
+        knn_ohe_data = intermediate_data.iloc[:, [0, 2, 3, 4, 5]]
+        knn_ohe_data = pd.get_dummies(knn_ohe_data, ["occupation", "marital_status", "education_level", "credit_default"])
         knn_ohe_data.age = knn_ohe_data.age.map(lambda x: x if x != -1 else np.nan)
 
         # Impute missing values in age column
