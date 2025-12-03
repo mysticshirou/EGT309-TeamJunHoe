@@ -1,8 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, fbeta_score
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 import seaborn as sns
-from scipy.stats import hmean
 
 from skopt.space import Integer, Categorical, Real
 from typing import Any
@@ -29,33 +28,32 @@ def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
 def generate_report(y_test, y_prob, params):
     alpha = params.get("alpha", 0.5)
 
-    # Thresholds from predicted probabilities
-    precision, recall_vals, thresholds = precision_recall_curve(y_test, y_prob)
+    # ROC curve values
+    fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+    roc_auc = auc(fpr, tpr)
 
+    # Compute weighted GMS across all thresholds
     custom_scores = []
     for t in thresholds:
         y_pred_t = (y_prob >= t).astype(int)
 
-        # True positives & True negatives
         tp = np.sum((y_pred_t == 1) & (y_test == 1))
         tn = np.sum((y_pred_t == 0) & (y_test == 0))
         fn = np.sum((y_pred_t == 0) & (y_test == 1))
         fp = np.sum((y_pred_t == 1) & (y_test == 0))
 
-        # Sensitivity (recall) and Specificity
         sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
         specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
 
-        # Weighted G-Mean
         score = (sensitivity ** alpha) * (specificity ** (1 - alpha))
         custom_scores.append(score)
 
     custom_scores = np.array(custom_scores)
     best_idx = np.argmax(custom_scores)
     best_threshold = thresholds[best_idx]
+
     y_pred_best = (y_prob >= best_threshold).astype(int)
 
-    # Metrics at best threshold
     tp = np.sum((y_pred_best == 1) & (y_test == 1))
     tn = np.sum((y_pred_best == 0) & (y_test == 0))
     fp = np.sum((y_pred_best == 1) & (y_test == 0))
@@ -65,31 +63,29 @@ def generate_report(y_test, y_prob, params):
     specificity_best = tn / (tn + fp) if (tn + fp) > 0 else 0
     weighted_gmean_best = custom_scores[best_idx]
 
-    # Classification reports
-    cls_report = classification_report(y_test, (y_prob >= 0.5).astype(int), output_dict=True)
-    best_cls_report = classification_report(y_test, y_pred_best, output_dict=True)
-
+    # Final report dictionary
     report = {
         "metrics": {
-            "sensitivity (recall)": recall_best,
-            "specificity": specificity_best,
-            "weighted_gmean": weighted_gmean_best,
-            "threshold": best_threshold,
-            "alpha": alpha
+            "sensitivity (recall)": float(recall_best),
+            "specificity": float(specificity_best),
+            "weighted_gmean": float(weighted_gmean_best),
+            "roc_auc": float(roc_auc)
         },
-        "full_cls_report": cls_report,
-        "best_cls_report": best_cls_report
+        "parameters": {
+            "threshold": float(best_threshold),  # <-- cast here
+            "alpha": float(alpha)
+        }
     }
 
     # Plotting
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
-    
-    # PR curve
-    ax[0].plot(recall_vals, precision)
-    ax[0].set_xlabel("Recall")
-    ax[0].set_ylabel("Precision")
-    ax[0].set_title("Precision-Recall Curve")
-    
+
+    # ROC curve
+    ax[0].plot(fpr, tpr)
+    ax[0].set_xlabel("False Positive Rate")
+    ax[0].set_ylabel("True Positive Rate")
+    ax[0].set_title("ROC Curve (AUC = {:.4f})".format(roc_auc))
+
     # Confusion matrix at best threshold
     cf_matrix = confusion_matrix(y_test, y_pred_best)
     sns.heatmap(cf_matrix, annot=True, fmt="d", ax=ax[1], cmap="Blues")

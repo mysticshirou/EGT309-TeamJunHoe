@@ -52,11 +52,13 @@ class CatBoost(Model):
 
         # Probabilities for positive class
         y_prob = model.predict_proba(test_pool)[:, 1]
-
-        # Predict classes
-        y_pred = model.predict(test_pool)
-
         report, fig = generate_report(y_test, y_prob, params)
+
+        importances = model.get_feature_importance(test_pool)
+        feature_names = X_test.columns.tolist()
+        feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}
+        report["feature_importance"] = feat_imp
+
 
         return report, fig
 

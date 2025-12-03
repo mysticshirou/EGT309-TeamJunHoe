@@ -15,15 +15,11 @@ class KNN(Model):
         search_space = read_bs_search_space(params.get("knn_bayes_search_search_space", {}))
         assert len(search_space) > 0
 
-        # Create scorer for model
-        fbeta_scorer = make_scorer(fbeta_score, beta=params.get("beta"))
-
         if params.get("knn_auto_optimize") == True:
             knn = KNeighborsClassifier()
             model = BayesSearchCV(
                 knn,
                 search_space,
-                scoring=fbeta_scorer,
                 random_state=params.get("random_state"),
                 **params.get("knn_bayes_search_settings", {})
             )
@@ -38,9 +34,6 @@ class KNN(Model):
     def eval(model, X_test, y_test, params):
         # Probabilities for positive class
         y_prob = model.predict_proba(X_test)[:, 1]
-        # Predict classes
-        y_pred = model.predict(X_test)
-
         report, fig = generate_report(y_test, y_prob, params)
 
         return report, fig

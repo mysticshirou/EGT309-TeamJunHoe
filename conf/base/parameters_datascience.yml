@@ -1,10 +1,10 @@
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn" | "lightgbm"
-  model_choice: "cat_boost"
+  model_choice: "xg_boost"
   # Global random state seed for model
   random_state: 0
-  alpha: 0.7
+  alpha: 0.6
   # Whether to save the model
   save_model: False
   save_model_name: "cat_model"
@@ -40,7 +40,8 @@ model_params:
     iterations: 1000
     task_type: "CPU"
     loss_function: "MultiClass"
-    class_weights: [1, 2.5]
+    # class_weights: [1, 2.5]
+    auto_class_weights: "Balanced"
     # use_best_model: True
 
   # ADA BOOST
@@ -88,10 +89,24 @@ model_params:
     weights: "distance"
 
   # XG BOOST
+  xgboost_auto_optimize: False
+  xgboost_bayes_search_settings:
+    n_iter: 50
+    cv: 5
+  xgboost_bayes_search_search_space:
+    max_depth: [3, 10]
+    learning_rate: [0.01, 0.3]
+    n_estimators: [100, 500]
+    subsample: [0.5, 1.0]
+    colsample_bytree: [0.5, 1.0]
+    reg_lambda: [0.0, 5.0]
+    reg_alpha: [0.0, 5.0]
   xgboost_settings:
+    objective: "binary:logistic"
+    eval_metric: "logloss"
+    max_depth: 6
+    learning_rate: 0.1
+    n_estimators: 300
+    subsample: 0.8
+    colsample_bytree: 0.8
     scale_pos_weight: 1.0
-
-  mlp_settings:
-    hidden_layers: [128, 128, 128]
-    lr: 0.03
-    epochs: 100

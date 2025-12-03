@@ -39,13 +39,17 @@ class DecisionTree(Model):
             # fig = plt.figure()
         
         return trained_model, trained_model.get_params()
+    
     @staticmethod
     def eval(model, X_test, y_test, params: dict[Any, Any]) -> Any:
         # Probabilities for positive class
         y_prob = model.predict_proba(X_test)[:, 1]
-        # Predict classes
-        y_pred = model.predict(X_test)
-
         report, fig = generate_report(y_test, y_prob, params)
-
+        
+        # Add feature importances
+        importances = model.feature_importances_
+        feature_names = X_test.columns.tolist()
+        feat_imp = {name: float(imp) for name, imp in zip(feature_names, importances)}
+        report["feature_importance"] = feat_imp
+        
         return report, fig

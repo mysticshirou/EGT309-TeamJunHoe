@@ -34,9 +34,12 @@ class LightGBM(Model):
     def eval(model, X_test, y_test, params):
         # Probabilities for positive class
         y_prob = model.predict_proba(X_test)[:, 1]
-        # Predict classes
-        y_pred = model.predict(X_test)
-
         report, fig = generate_report(y_test, y_prob, params)
+
+        importances = model.feature_importance()
+        feature_names = model.feature_name()
+        feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}
+        report["feature_importance"] = feat_imp
+
 
         return report, fig

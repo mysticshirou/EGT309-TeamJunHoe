@@ -37,12 +37,12 @@ encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
   # label should be used for LightGBM
-  encode: "label"
+  encode: "ohe"
 
 splitting_params:
   random_state: 0
   # Float value representing % of dataset to be in test split
   test_size: 0.15
   # Options: ('undersampling', 'stratified', 'oversampling')
-  imbalance_handling: 'undersampling'
+  imbalance_handling: 'stratified'
   sampling_strategy: 0.67
