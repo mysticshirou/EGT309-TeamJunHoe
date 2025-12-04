@@ -1,7 +1,7 @@
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn" | "lightgbm"
-  model_choice: "xg_boost"
+  model_choice: "cat_boost"
   # Global random state seed for model
   random_state: 0
   alpha: 0.6
@@ -109,4 +109,4 @@ model_params:
     n_estimators: 300
     subsample: 0.8
     colsample_bytree: 0.8
-    scale_pos_weight: 1.0
+    scale_pos_weight: 4.0

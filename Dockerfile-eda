@@ -1,0 +1,17 @@
+FROM python:3.13-slim-bookworm
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip install --upgrade pip && pip install uv
+
+RUN uv add -r requirements.txt
+
+RUN uv add jupyterlab ipykernel
+
+EXPOSE 8888
+
+RUN python -m ipykernel install --name project-kernel --display-name "Project Kernel"
+
+CMD ["uv", "run", "jupyter", "lab", "--no-browser", "--ip=0.0.0.0", "--port=8888", "--NotebookApp.token=''", "--NotebookApp.password=''"]
