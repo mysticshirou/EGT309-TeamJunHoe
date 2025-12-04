@@ -8,8 +8,6 @@ RUN pip install --upgrade pip && pip install uv
 
 RUN uv add -r requirements.txt
 
-RUN uv add jupyterlab ipykernel
-
 EXPOSE 8888
 
 RUN python -m ipykernel install --name project-kernel --display-name "Project Kernel"
