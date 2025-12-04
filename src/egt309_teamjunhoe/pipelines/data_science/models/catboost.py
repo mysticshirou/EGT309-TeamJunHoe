@@ -47,13 +47,16 @@ class CatBoost(Model):
     
     @staticmethod
     def eval(model, X_test, y_test, params):
+        # Get list of categorical features
         categorical_features = X_test.select_dtypes(include=['object']).columns.tolist()
+        # Catboost needs this special test pool for encoding features during testing
         test_pool = Pool(X_test, cat_features=categorical_features)
 
         # Probabilities for positive class
         y_prob = model.predict_proba(test_pool)[:, 1]
         report, fig = generate_report(y_test, y_prob, params)
 
+        # Getting feature importance and add to metrics report
         importances = model.get_feature_importance(test_pool)
         feature_names = X_test.columns.tolist()
         feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}

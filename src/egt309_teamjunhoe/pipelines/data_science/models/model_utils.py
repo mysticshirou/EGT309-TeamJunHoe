@@ -37,21 +37,27 @@ def generate_report(y_test, y_prob, params):
     for t in thresholds:
         y_pred_t = (y_prob >= t).astype(int)
 
+        # calculate metrics using their predicted and real classes
         tp = np.sum((y_pred_t == 1) & (y_test == 1))
         tn = np.sum((y_pred_t == 0) & (y_test == 0))
         fn = np.sum((y_pred_t == 0) & (y_test == 1))
         fp = np.sum((y_pred_t == 1) & (y_test == 0))
 
+        # TP / TP + FN
         sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
+        # TN / TN + FP
         specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
 
+        # Geometric Mean Score
         score = (sensitivity ** alpha) * (specificity ** (1 - alpha))
         custom_scores.append(score)
 
+    # Gets the best threshold
     custom_scores = np.array(custom_scores)
     best_idx = np.argmax(custom_scores)
     best_threshold = thresholds[best_idx]
 
+    # Get the predictions using the best threshold and recalculate all metrics
     y_pred_best = (y_prob >= best_threshold).astype(int)
 
     tp = np.sum((y_pred_best == 1) & (y_test == 1))
@@ -72,7 +78,7 @@ def generate_report(y_test, y_prob, params):
             "roc_auc": float(roc_auc)
         },
         "parameters": {
-            "threshold": float(best_threshold),  # <-- cast here
+            "threshold": float(best_threshold),
             "alpha": float(alpha)
         }
     }
