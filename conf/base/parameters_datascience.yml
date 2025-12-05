@@ -4,6 +4,7 @@ model_params:
   model_choice: "cat_boost"
   # Global random state seed for model
   random_state: 0
+  # alpha value used for Geometric Mean Score calculation
   alpha: 0.6
   # Whether to save the model
   save_model: False
