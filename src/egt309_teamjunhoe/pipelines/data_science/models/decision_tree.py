@@ -14,8 +14,8 @@ import seaborn as sns
 class DecisionTree(Model):
     @staticmethod
     def train(X_train, y_train, params: dict[Any, Any]) -> Any:
-        # Bayesion Optimiser to determine optimal decision tree parameters
         if params.get("decision_tree_auto_optimize") == True:
+            # Bayesion Optimiser to determine optimal decision tree parameters
             search_space = read_bs_search_space(params.get("decision_tree_bayes_search_search_space", {}))
             assert len(search_space) > 0
 
@@ -29,14 +29,10 @@ class DecisionTree(Model):
             )
             trained_model = model.fit(X_train, y_train).best_estimator_
 
-            # # Plot decision tree # NOT NEEDED ANYMORE
-            # fig = plt.figure(figsize=(12, 8))
-            # plot_tree(trained_model, filled=True) 
         else:
             model = DecisionTreeClassifier(random_state=params.get("random_state"), 
                                            **params.get("decision_tree_settings", {}))
             trained_model = model.fit(X_train, y_train)
-            # fig = plt.figure()
         
         return trained_model, trained_model.get_params()
     
