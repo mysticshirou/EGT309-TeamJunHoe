@@ -16,6 +16,7 @@ class KNN(Model):
         assert len(search_space) > 0
 
         if params.get("knn_auto_optimize") == True:
+            # Bayesion Optimiser to determine optimal hyperparameters
             knn = KNeighborsClassifier()
             model = BayesSearchCV(
                 knn,

@@ -14,6 +14,7 @@ class XGBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
         if params.get("xgboost_auto_optimize") is True:
+            # Bayesion Optimiser to determine optimal hyperparameters
             search_space = read_bs_search_space(
                 params.get("xgboost_bayes_search_search_space", {})
             )

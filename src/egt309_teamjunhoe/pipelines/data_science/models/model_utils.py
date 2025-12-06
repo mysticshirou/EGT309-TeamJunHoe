@@ -7,6 +7,19 @@ from skopt.space import Integer, Categorical, Real
 from typing import Any
 
 def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
+    """
+    Converting search space defined in parameters.yml into a proper BayesSearchCV search space
+    
+    Parameters
+        search_dict: Dictionary containing (key) keyword argument name: (value) list indicating search space
+
+    Returns
+        search_space: Dictionary containing (key) keyword argument name: (value) Integer (int) / Real (float) / Categorical (string) skopt search space
+    
+    Usage
+        For integers and floats:    Length of list in parameters.yml == 2, lower bound at index 0, upper bound at index 1
+        For categorical:            No length limit, categories must match possible values for specified hyperparameter
+    """
     # Read and sort categories into respective skopt spaces
     search_space = dict()
     for key in search_dict:
@@ -26,6 +39,18 @@ def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
     return search_space
 
 def generate_report(y_test, y_prob, params):
+    """
+    Generates the evaluation report
+
+    Parameters
+        y_test: Target test split
+        y_prob: Output from model.predict_proba() method
+        params: Parameter dictionary obtained from config
+
+    Returns
+        report: Dictionary containing evaluation metrics
+        fig:    matplotlib.figure.Figure object. Contains evaluation visualisations
+    """
     alpha = params.get("alpha", 0.5)
 
     # ROC curve values

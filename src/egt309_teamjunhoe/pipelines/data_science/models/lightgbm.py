@@ -12,6 +12,7 @@ class LightGBM(Model):
     @staticmethod
     def train(X_train, y_train, params):
         if params.get("lightgbm_auto_optimize") == True:
+            # Bayesion Optimiser to determine optimal hyperparameters
             search_space = read_bs_search_space(params.get("lightgbm_bayes_search_search_space", {}))
             assert len(search_space) > 0
 
@@ -40,6 +41,5 @@ class LightGBM(Model):
         feature_names = model.feature_name()
         feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}
         report["feature_importance"] = feat_imp
-
 
         return report, fig

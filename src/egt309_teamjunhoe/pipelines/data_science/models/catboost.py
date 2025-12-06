@@ -27,6 +27,7 @@ class CatBoost(Model):
         eval_pool = Pool(X_eval, y_eval, cat_features=categorical_features)
         
         if params.get("cat_boost_auto_optimize") == True:
+            # Grid Search to determine optimal hyperparameters
             search_space = params.get("cat_boost_grid_search_search_space", {})
             assert len(search_space) > 0
 
@@ -61,7 +62,6 @@ class CatBoost(Model):
         feature_names = X_test.columns.tolist()
         feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}
         report["feature_importance"] = feat_imp
-
 
         return report, fig
 

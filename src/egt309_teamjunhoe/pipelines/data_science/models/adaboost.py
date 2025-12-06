@@ -13,6 +13,7 @@ class AdaBoost(Model):
     @staticmethod
     def train(X_train, y_train, params):
         if params.get("ada_boost_auto_optimize") == True:
+            # Bayesion Optimiser to determine optimal hyperparameters
             search_space = read_bs_search_space(params.get("ada_boost_bayes_search_search_space", {}))
             assert len(search_space) > 0
 
@@ -41,6 +42,5 @@ class AdaBoost(Model):
         feature_names = X_test.columns.tolist()
         feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}
         report["feature_importance"] = feat_imp
-
 
         return report, fig
