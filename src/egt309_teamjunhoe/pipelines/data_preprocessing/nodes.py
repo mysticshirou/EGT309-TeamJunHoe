@@ -45,41 +45,40 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
             value=intermediate_data.age.map(lambda x: True if x == -1 else False)
         )
 
-    # No label encoding needed
     return intermediate_data
 
 def _clean_occupation_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     if params.get("generalize", None) == True:
-        intermediate_data.occupation = intermediate_data.occupation.apply(lambda x: "no" if (x == "student") \
-                                                                                        or (x == "retired") \
-                                                                                            else "yes")
+        # Generalise column to employed (yes) / unemployed (no)
+        intermediate_data.occupation = intermediate_data.occupation.apply(
+            lambda x: "no" if (x == "student") or (x == "retired") else "yes"
+        )
     return intermediate_data
 
 def _clean_marital_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # No data cleaning needed
+    # No data cleaning needed, as per EDA
     return intermediate_data
 
 def _clean_education_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # No data cleaning needed
+    # No data cleaning needed, only slight changes to category naming scheme
     intermediate_data.education_level = intermediate_data.education_level.map(lambda cat: cat.lower().replace(".", "_"))
     return intermediate_data
 
 def _clean_credit_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # Combine yes and no into known
+    # Combine yes and no into known as per EDA
     intermediate_data.credit_default = intermediate_data.credit_default.map(lambda x: x if x == "unknown" else "known")
     return intermediate_data
 
 def _clean_contact_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # Combining Cell & cellular + Telephone & telephone
+    # Combining categories: Cell & cellular -> cellular | Telephone & telephone -> telephone
     intermediate_data.contact_method = intermediate_data.contact_method.map(
         lambda x: "cellular" if x[0].lower() == "c" else "telephone"
     )
     return intermediate_data
 
 def _clean_campaign_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    # Converting all negative numbers to positive numbers
+    # Converting all negative numbers to positive numbers as per EDA
     intermediate_data.campaign_calls = intermediate_data.campaign_calls.abs()
-
     return intermediate_data
 
 def _clean_pdays_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
@@ -90,38 +89,39 @@ def _clean_pdays_column (intermediate_data: pd.DataFrame, params) -> pd.DataFram
             column="previously_contacted", 
             value=intermediate_data.previous_contact_days.map(lambda x: False if x == 999 else True)
         )
-
-    # No label encoding needed
     return intermediate_data
 
 def _clean_housing_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
-    method = params.get("housing_loan_cleaning")
-    match method:
+    match params.get("housing_loan_cleaning"):
         case "fill": 
+            # Change all null values to "missing" (best)
             intermediate_data.housing_loan = intermediate_data.housing_loan.fillna("missing")
-        case "none":
+        case _:    # Covers "none" or any other wildcard value
             pass
+            
     return intermediate_data
 
 def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     # Different methods based on what is chosen in parameters.yml
-    method = params.get("personal_loan_cleaning")
-    match method:
-        case "fill": 
+    match params.get("personal_loan_cleaning"):
+        case "fill":
+            # Change all null values to "missing" (best)
             intermediate_data.personal_loan = intermediate_data.personal_loan.fillna("missing")
-        case "none":
-            pass
         case "impute":
+            # Fill null values via mode imputation
             intermediate_data.personal_loan = intermediate_data.personal_loan.fillna(intermediate_data.personal_loan.mode()[0])
+        case _:    # Covers "none" or any other wildcard value
+            pass
+            
     return intermediate_data
 
 def _clean_subscriber_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     # Convert to boolean
     intermediate_data.subscription_status = intermediate_data.subscription_status.map(lambda x: True if x == "yes" else False)
-
     return intermediate_data
 
 def _normalize_dataset(dataset: pd.DataFrame, params):
+    # Normalise dataset values (int, float) to 0.0 - 1.0
     if params.get("normalize", None) == False:
         return dataset
     
@@ -131,18 +131,17 @@ def _normalize_dataset(dataset: pd.DataFrame, params):
     for col in numeric_cols:
         col_min = df[col].min()
         col_max = df[col].max()
-        if col_max != col_min:
-            df[col] = (df[col] - col_min) / (col_max - col_min)
-        else:
-            df[col] = 0.0
+        if col_max != col_min: df[col] = (df[col] - col_min) / (col_max - col_min)
+        else: df[col] = 0.0
 
     return df
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Feature selection helper function
-# -----------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _feature_selection (intermediate_data: pd.DataFrame, params):
+    # Select features based on ranking and n features to select as configured in params
     ranking: list = params.get("ranking")
     top_n_features: int = params.get("top_n_features")
     selected_features = ranking[:top_n_features]
@@ -153,7 +152,7 @@ def _feature_selection (intermediate_data: pd.DataFrame, params):
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 #   Encoding Helper Function
-# -----------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _one_hot_encode (intermediate_data: pd.DataFrame):
     return pd.get_dummies(
@@ -180,11 +179,14 @@ def _resampled_split(
     sampling: str = None,
     sampling_strategy: float = 1.0
 ):
+    # Shuffle dataset
     intermediate_data = intermediate_data.sample(frac=1, random_state=random_state).reset_index(drop=True)
-    
+
+    # Split dataset into feature and target column(s)
     X = intermediate_data.drop(columns=["subscription_status"])
     y = intermediate_data.subscription_status
 
+    # Stratify split the dataset
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
         test_size=test_size,
@@ -192,10 +194,10 @@ def _resampled_split(
         random_state=random_state
     )
 
-    if sampling == 'under':
+    if sampling == 'under':    # Undersampling
         sampler = RandomUnderSampler(random_state=random_state, sampling_strategy=sampling_strategy)
         X_train, y_train = sampler.fit_resample(X_train, y_train)
-    elif sampling == 'over':
+    elif sampling == 'over':   # Oversampling
         sampler = RandomOverSampler(random_state=random_state, sampling_strategy='auto')
         X_train, y_train = sampler.fit_resample(X_train, y_train)
 
@@ -229,9 +231,11 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     return normalized_data
 
 def feature_selection_dataset (dataset: pd.DataFrame, params):
+    # Select features as per configuration
     return _feature_selection(dataset, params)
 
 def encode_dataset (dataset: pd.DataFrame, params):
+    # Encode dataset as per configuration
     encoding_type = params.get("encode")
     match encoding_type:
         case "ohe":
@@ -245,6 +249,7 @@ def encode_dataset (dataset: pd.DataFrame, params):
 
 
 def split_dataset(dataset: pd.DataFrame, params: dict):
+    # Split dataset as per configuration
     test_size = params.get("test_size")
     method = params.get("imbalance_handling", None)
     random_state = params.get("random_state", 0)
@@ -271,5 +276,6 @@ def split_dataset(dataset: pd.DataFrame, params: dict):
             )
         case _:
             raise ValueError(f'"{method}" is not a valid imbalance handling choice')
+
 
 
