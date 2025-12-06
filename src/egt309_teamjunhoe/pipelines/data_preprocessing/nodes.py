@@ -29,7 +29,8 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     if params.get("age_knn_impute", None) == True:
         # Impute missing age data via KNN as per EDA
         # Create OHE data for KNN
-        knn_ohe_data = intermediate_data.iloc[:, [0, 2, 3, 4, 5, 8]]
+        columns_to_use = ["age", "occupation", "marital_status", "education_level", "credit_default", "contact_method"]
+        knn_ohe_data = intermediate_data[columns_to_use]
         knn_ohe_data = pd.get_dummies(knn_ohe_data, ["occupation", "marital_status", "education_level", "credit_default", "contact_method"])
         knn_ohe_data.age = knn_ohe_data.age.map(lambda x: x if x != -1 else np.nan)
 
@@ -226,7 +227,7 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     cleaned_data = _clean_subscriber_column(intermediate_data, params)
 
     # Normalize numeric columns
-    normalized_data = _normalize_dataset(intermediate_data, params)
+    normalized_data = _normalize_dataset(cleaned_data, params)
 
     return normalized_data
 

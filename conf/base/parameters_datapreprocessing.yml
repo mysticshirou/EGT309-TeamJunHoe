@@ -1,7 +1,7 @@
 cleaning_params:
   # AGE
   # Create the age_unk columns (True, False)
-  create_age_unk: False
+  create_age_unk: True
   # Do KNN imputation to impute missing ages (True, False)
   age_knn_impute: True
   age_knn_impute_settings:  
@@ -22,14 +22,14 @@ cleaning_params:
 
   # PERSONAL_LOAN
   # Cleaning mode for personal_loan column ('fill', 'impute', 'none')
-  personal_loan_cleaning: "fill"
+  personal_loan_cleaning: "impute"
 
   # NORMALIZATION
   normalize: False
 
 feature_selection_params:
   # Naive ranking of features made from EDA
-  ranking: ['occupation', 'contact_method', 'credit_default', 'previously_contacted', 'campaign_calls', 'marital_status', 'education_level', 'age', 'age_unk', 'housing_loan', 'personal_loan']
+  ranking: ['previously_contacted', 'occupation', 'contact_method', 'credit_default', 'campaign_calls', 'marital_status', 'education_level', 'age', 'age_unk', 'housing_loan', 'personal_loan']
   # Select top features
   top_n_features: 11
 
