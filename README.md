@@ -179,3 +179,13 @@ Our final choice was XGBoost due to its baseline powerful performance and robust
 
 
 ## Section I - Other Considerations
+
+### Model Drift
+Over time, predictions are likely to get less and less accurate on newer customers. It is important to monitor metrics to ensure that model retraining is performed when necessary.
+
+### Changing features
+While certain features like Age are independent to the banks' events, other features like Campaign Calls that were fully reliant on the one campaign that the bank used to collect data from may change drastically or be removed as a feature. Similarily, retraining will be necessary in this case.
+
+### Interpreting results
+While easy to set a clear threshold to separate customers between two distinct classes as 'subscribed' and 'not subscribed', it might be more useful to create multiple bins corresponding to their probability of subscribing, to add the possibility of contacting customers proportionally to their chance of subscribing and enhancing resource allocation while not automatically discarding a large amount of customers.
+
