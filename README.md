@@ -3,8 +3,18 @@
 ## Section A - Contributors
 
 ### Foo Tun Wei Darren - 231725Z@mymail.nyp.edu.sg
+- Data cleaning & preprocessing: Age, Campaign Calls, Education Level, Contact Method, Occupation
+- Feature analysis: Univariate analysis for above columns
+- Kedro pipeline development: Overall data Preprocessing pipeline, Overall data Science pipeline, Configuration approach
+- Model tuning methods: Grid search, Bayesian optimisation
+- Model evaluation methods: Confusion matrix visualisation
 
 ### Harish Kanna - 230268R@mymail.nyp.edu.sg
+- Data cleaning & preprocessing: Marital Status, Previous Contact Days, Credit Default, Personal Loan, Housing Loan
+- Feature analysis: Bivariate analysis, Feature selection, Univariate analysis for above columns
+- Kedro pipeline development: Model registry, Model interface (Structural Subtyping)
+- Model tuning methods: Threshold tuning
+- Model evaluation methods: Evaluation metrics decision-making, Weight geometric mean scoring (metric)
 
 ## Section B - Folder Structure
 
@@ -106,14 +116,23 @@ graph TD
 | model_save | Saves the model to the saved_models directory | trained_model (PickleDataset) | None (Saves model to directory) |
 
 ## Section E - EDA Overview
-### Overall Data Key Findings:
-#### Many High-Cardinality Categorical Features
+The following are some of the main insights and problems we found through Exploratory Data Analysis, and a brief overview of how we dealt with them.
+
+### Many High-Cardinality Categorical Features
 Over half of all columns are of a categorical type, and the number of unique classes in a column goes up to 12 at max. Multiple options were created for encoding these columns, which is not only for experimentation but also because different encoding types work better for different models. One-Hot encoding works best with XGBoost, Label Encoding for LightGBM, and no encoding for CatBoost (it uses it's own encoding internally). As such, the pipeline can dynamically change the type of encoding used with a configurable option in the parameters_datapreprocessing.yml file to cater to different models' needs.
 
-#### Very imbalanced dataset
+### Very imbalanced dataset
 The majority class comprises 88% of the entire dataset, which is a harsh imbalance that must be addressed in some way. While both undersampling and oversampling were implemented as choices in the pipeline, the final choice was just to stratify the classes while splitting the data. Oversampling methods like SMOTE would not work well on the complex data, while undersampling would get rid of important data that the model would benefit from having access to for learning.
 
-### Column-specific Key Findings:
+### Outlier handling
+One column featured many outlier values, the Age column (150 years), initially we decided to change all the outliers to -1, to signify that the age is unknown. However, the final choice was to impute the outlier values based on data from other columns (occupation, education level, marital status, credit default, and contact method). Which was successful as the distribution after imputation was able to precisely replicate the original distribution.
+
+### Null value handling
+
+### Data entry error handling
+The Campaign Calls column featured many data entry errors, with many of its values being negative numbers. This was handled through statistical analysis with the Kolmogorov-Smirnov test (2 sample K-S test), which helped to prove that the negative and positive sample spaces were likely from the same distribution. Hence, the final decision of moving the negative numbers into the positive space throught the absolute function.
+
+### Feature analysis
 
 ## Section F - Data Processing Overview
 
@@ -121,7 +140,7 @@ This section primarily explains the (default) main data processing steps for eac
 
 | Column Name | Processing Steps |
 |:---:|---|
-| AGE | Data processing done by changing outlier ages (150 yrs old) via imputation (configurable) |
+| AGE | Data processing done by changing outlier ages (150 yrs old) via KNN imputation based on specific other columns |
 | MARITAL STATUS | No data processing |
 | OCCUPATION | No data processing, some categories changed to easier to read format |
 | EDUCATION | No data processing, some categories changed to easier to read format |
@@ -150,5 +169,6 @@ Our final choice was XGBoost due to its baseline powerful performance and robust
 | 1 | Weighted Geometric Mean (GMS) | Weighted geometric mean of recall and specificity that favors recall | $\( \text{GMS} = \text{Recall}^{0.6} \times \text{Specificity}^{0.4} \)$ | Maximize recall while ensuring specificity is not fully abandoned |
 | 2 | Recall | How many of total positives were correctly identified as positives | $\( \text{Recall} = \frac{\text{TP}}{\text{TP + FN}} \)$ | The cost of not selecting (false negative) a customer is greater than the cost of getting a false positive |
 | 3 | Specificity | How many of total negatives were correctly identified as negatives | $\( \text{Specificity} = \frac{\text{TN}}{\text{TN + FP}} \)$ | Specificity needs to be reasonable such that the bank can confidently filter out customers identified as unlikely to subscribe |
+
 
 ## Section I - Other Considerations
