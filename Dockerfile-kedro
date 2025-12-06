@@ -1,12 +1,14 @@
 # Base Python image
-FROM python:3.13-slim-bookworm
+FROM python:3.13-bookworm
 
 WORKDIR /app
 
 COPY . .
 
+# use uv as its faster for installing dependencies
 RUN pip install --upgrade pip && pip install uv
 
+# similar to pip install
 RUN uv add -r requirements.txt
 
 CMD ["uv", "run", "kedro", "run"]

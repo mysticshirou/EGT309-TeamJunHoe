@@ -8,4 +8,3 @@ docker run --rm \
     -v "$(pwd)/data:/app/data" \
     -v "$(pwd)/saved_models:/app/saved_models" \
     "$IMAGE_NAME"
-
