@@ -128,6 +128,13 @@ The majority class comprises 88% of the entire dataset, which is a harsh imbalan
 One column featured many outlier values, the Age column (150 years), initially we decided to change all the outliers to -1, to signify that the age is unknown. However, the final choice was to impute the outlier values based on data from other columns (occupation, education level, marital status, credit default, and contact method). Which was successful as the distribution after imputation was able to precisely replicate the original distribution.
 
 ### Null value handling
+Two of the columns, Housing Loan and Personal Loan, contained null values. Neither of these columns were correlated with any other column, making accurate imputation possible. Housing Loan especially had over 60% of missing data which will make any form of imputation very likely to be wrong, hence all missing values were filled with the value 'missing'. Personal Loan only had around 10% of missing data, and the mode of the column 'no' had a very high percentage, hence mode imputation was used for it.
+
+### Inconsistent value handling
+The Contact Method column had more unique values due to inconsistent entry of data than classes that actually existed. Both 'cellular' and 'telephone' were entered in two different ways, which was collapsed to one unique class each.
+
+### Lack of values in certain classes for some columns
+The Occupation column had a large number of unique classes, which resulted in some classes having a low number of data points. The Credit Default column only had 3 unique classes, but the 'yes' class only had 3 data points in the entire dataset. Models are prone to overfitting on these classes with few samples, hence feature engineering was used to combine some classes and increase the number of samples per class in each column. Occupation was generalized into 'employed' and 'not employed', while Credit Default was generalized into 'known' and 'unknown'.
 
 ### Data entry error handling
 The Campaign Calls column featured many data entry errors, with many of its values being negative numbers. This was handled through statistical analysis with the Kolmogorov-Smirnov test (2 sample K-S test), which helped to prove that the negative and positive sample spaces were likely from the same distribution. Hence, the final decision of moving the negative numbers into the positive space throught the absolute function.
