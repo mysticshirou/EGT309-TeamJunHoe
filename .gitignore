@@ -18,6 +18,9 @@ catboost_info/**
 !data/01_raw
 !data/01_raw/*
 
+!data/08_reporting
+!data/08_reporting/*
+
 # also keep all .gitkeep files
 !.gitkeep
 

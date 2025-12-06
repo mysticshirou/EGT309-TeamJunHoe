@@ -7,7 +7,7 @@ model_params:
   # alpha value used for Geometric Mean Score calculation
   alpha: 0.6
   # Whether to save the model
-  save_model: False
+  save_model: True
   save_model_name: "cat_model"
 
   # DECISION TREE

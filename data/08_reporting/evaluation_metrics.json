@@ -1,0 +1,24 @@
+{
+  "metrics": {
+    "sensitivity (recall)": 0.7370689655172413,
+    "specificity": 0.6268466168156119,
+    "weighted_gmean": 0.6908271380513155,
+    "roc_auc": 0.7381113724553006
+  },
+  "parameters": {
+    "threshold": 0.4615593096444371,
+    "alpha": 0.6
+  },
+  "feature_importance": {
+    "age": 12.180677998914893,
+    "occupation": 5.635577677218578,
+    "marital_status": 5.715036960758286,
+    "education_level": 4.799755144551416,
+    "credit_default": 10.072245661528747,
+    "housing_loan": 3.0691509320643786,
+    "personal_loan": 0.7817921682010442,
+    "contact_method": 27.318814250712165,
+    "campaign_calls": 8.704380309603373,
+    "previously_contacted": 21.722568896447132
+  }
+}
