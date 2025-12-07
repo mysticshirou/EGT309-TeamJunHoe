@@ -1,13 +1,13 @@
 model_params:
   # Selected model for training 
   # "decision_tree" | "ada_boost" | "xg_boost" | "mlp" | "cat_boost" | "knn" | "lightgbm"
-  model_choice: "cat_boost"
+  model_choice: "lightgbm"
   # Global random state seed for model
   random_state: 0
-  # alpha value used for Geometric Mean Score calculation
+  # alpha value used for Geometric Mean Score calculation (recall weight is alpha, specificity weight is 1 - alpha)
   alpha: 0.6
   # Whether to save the model
-  save_model: True
+  save_model: False
   save_model_name: "cat_model"
 
   # DECISION TREE

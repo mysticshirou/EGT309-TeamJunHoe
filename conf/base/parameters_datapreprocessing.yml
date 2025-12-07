@@ -37,7 +37,7 @@ encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
   # label should be used for LightGBM
-  encode: "ohe"
+  encode: "label"
 
 splitting_params:
   random_state: 0
@@ -45,5 +45,5 @@ splitting_params:
   test_size: 0.15
   # Options: ('undersampling', 'stratified', 'oversampling')
   imbalance_handling: 'stratified'
-  # sampling_strategy only used if undersampling or oversampling
+  # sampling_strategy only used if undersampling or oversampling (0.13 - 1)
   sampling_strategy: 0.67
