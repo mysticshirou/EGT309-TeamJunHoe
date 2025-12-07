@@ -43,7 +43,7 @@ EGT309-TEAMJUNHOE
 ```
 ## Section C - Instructions
 
-Make sure your working directory is always the base directory of the entire repository, which should be ./EGT309-TeamJunHoe when cloned. All commands are structured around running them from the base directory.
+Make sure your working directory is always the base working directory of the en
 
 ### EDA
 Run `docker build --no-cache -t eda -f Dockerfile-eda .` to build the jupyter server image
@@ -178,9 +178,10 @@ Our final choice was XGBoost due to its baseline powerful performance and robust
 ### Main metrics for model evaluation:
 | Ranking | Metric | Definition | Formula | Reasoning |
 | :---: | :---: | :--- | :--- | :--- |
-| 1 | Weighted Geometric Mean (GMS) | Weighted geometric mean of recall and specificity that favors recall | $ \text{GMS} = \text{Recall}^{0.6} \times \text{Specificity}^{0.4} $ | Maximize recall while ensuring specificity is not fully abandoned |
-| 2 | Recall | How many of total positives were correctly identified as positives | $ \text{Recall} = \frac{\text{TP}}{\text{TP + FN}} $ | The cost of not selecting (false negative) a customer is greater than the cost of getting a false positive |
-| 3 | Specificity | How many of total negatives were correctly identified as negatives | $ \text{Specificity} = \frac{\text{TN}}{\text{TN + FP}} $ | Specificity needs to be reasonable such that the bank can confidently filter out customers identified as unlikely to subscribe |
+| 1 | Weighted Geometric Mean (GMS) | Weighted geometric mean of recall and specificity that favors recall | `GMS = Recall^0.6 * Specificity^0.4` | Maximize recall while ensuring specificity is not fully abandoned |
+| 2 | Recall | How many of total positives were correctly identified as positives | `Recall = TP / (TP + FN)` | The cost of not selecting (false negative) a customer is greater than the cost of getting a false positive |
+| 3 | Specificity | How many of total negatives were correctly identified as negatives | `Specificity = TN / (TN + FP)` | Specificity needs to be reasonable such that the bank can confidently filter out customers identified as unlikely to subscribe |
+
 
 
 ## Section I - Other Considerations
