@@ -19,27 +19,40 @@
 ## Section B - Folder Structure
 
 ```
-# Comments highlight directories not in base kedro structure
+# Comments highlight directories and files not in base kedro structure
 
 EGT309-TEAMJUNHOE
 ├── conf
-│   ├── base
-│   └── local
+│   ├── base
+│   │   ├── catalog.yml
+│   │   ├── parameters_datapreprocessing.yml
+│   │   └── parameters_datascience.yml
+│   ├── local
+│   ├── logging.yml
+│   └── README.md
 ├── data
-│   ├── 01_raw
-│   ├── 02_cleaned
-│   ├── 06_models
-│   │   └── trained_model
-│   └── 08_reporting
-├── saved_models                # Finalized models saved here
+│   ├── 01_raw
+│   ├── 02_cleaned
+│   └── 08_reporting
+├── Dockerfile-eda   --- Dockerfiles used to containerize dev and testing
+├── Dockerfile-kedro
+├── eda.ipynb
+├── pyproject.toml
+├── README.md
+├── requirements.txt
+├── run.sh
+├── saved_models   --- Contains subdirectories for each of the three model choices
+│   ├── cat_model  --- Each subdirectory contains one final model
+│   ├── light_model
+│   └── xgb_model
 └── src
     └── egt309_teamjunhoe
-        └── pipelines
-            ├── data_preprocessing
-            └── data_science
-                └── models      # Contains model classes
+        ├── pipelines
+        │   ├── data_preprocessing
+        │   ├── data_science
+        │   │   └── models       --- Model classes, model interface and model registry
+        └── settings.py
 
-17 directories
 ```
 ## Section C - Instructions
 
@@ -50,7 +63,7 @@ Run `docker build --no-cache -t eda -f Dockerfile-eda .` to build the jupyter se
 Run `docker run -d -p 8888:8888 eda` to start the jupyter server and use it as the jupyter kernel in your preferred IDE
 
 ### Kedro Pipeline
-Run `run.sh` to run the finalized pipeline
+Run `run.sh` to run the finalized pipeline. Ensure Docker is installed and available in your system for `run.sh` to work.
 
 Modify parameters used in the data_preprocessing pipeline in `conf/base/parameters_datapreprocessing.yml`
 
