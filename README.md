@@ -170,14 +170,14 @@ This section primarily explains the (default) main data processing steps for eac
 |:---:|---|
 | AGE | Data processing done by changing outlier ages (150 yrs old) via KNN imputation based on specific other columns |
 | MARITAL STATUS | No data processing |
-| OCCUPATION | No data processing, some categories changed to easier to read format |
+| OCCUPATION | Occupation column generalized to new boolean 'employed' column |
 | EDUCATION | No data processing, some categories changed to easier to read format |
 | CONTACT METHOD | Combined overlapping values |
 | CAMPAIGN CALLS | Changed all negative values to positive |
-| PREVIOUS CONTACT DAYS | Created new boolean column to denote 999 as "not previously contact" |
-| CREDIT DEFAULT | No data processing |
+| PREVIOUS CONTACT DAYS | Created new boolean column to denote 999 as 'not previously contacted' |
+| CREDIT DEFAULT | Combined 'yes' and 'no' into 'known' |
 | HOUSING LOAN | Changed null values to "missing" |
-| PERSONAL LOAN | Imputed null values via mode imputation (configurable) |
+| PERSONAL LOAN | Imputed null values via mode imputation |
 
 ## Section G - Model Choice
 ### CatBoost
