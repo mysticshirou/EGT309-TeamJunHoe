@@ -37,7 +37,7 @@ encoding_params:
   # Options: ('ohe', 'label', 'none')
   # none should only be used for Catboost
   # label should be used for LightGBM
-  encode: "none"
+  encode: "ohe"
 
 splitting_params:
   random_state: 0

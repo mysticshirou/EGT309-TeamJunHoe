@@ -1,5 +1,6 @@
 ipython>=8.10
 jupyterlab>=3.0
+ipykernel
 notebook
 kedro~=1.0.0
 kedro-datasets
@@ -18,4 +19,3 @@ xgboost
 catboost
 ipywidgets
 lightgbm
-ngboost

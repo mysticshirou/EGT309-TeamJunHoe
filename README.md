@@ -43,6 +43,11 @@ EGT309-TEAMJUNHOE
 ```
 ## Section C - Instructions
 
+### EDA
+Run `docker build --no-cache -t eda -f Dockerfile-eda .` to build the jupyter server image
+Run `docker run -d -p 8888:8888 eda` to start the jupyter server and use it as the jupyter kernel in your preferred IDE
+
+### Kedro Pipeline
 Run `run.sh` to run the finalized pipeline
 
 Modify parameters used in the data_preprocessing pipeline in `conf/base/parameters_datapreprocessing.yml`

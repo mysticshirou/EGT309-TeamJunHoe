@@ -38,6 +38,7 @@ class AdaBoost(Model):
         y_prob = model.predict_proba(X_test)[:, 1]
         report, fig = generate_report(y_test, y_prob, params)
 
+        # Feature importances
         importances = model.feature_importances_
         feature_names = X_test.columns.tolist()
         feat_imp = {k: float(v) for k, v in zip(feature_names, importances)}

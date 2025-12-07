@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-# use uv as its faster for installing dependencies
+# using uv as its faster for installing dependencies
 RUN pip install --upgrade pip && pip install uv
 
 # similar to pip install
