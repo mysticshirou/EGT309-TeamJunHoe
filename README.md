@@ -43,7 +43,7 @@ EGT309-TEAMJUNHOE
 ```
 ## Section C - Instructions
 
-Make sure your working directory is always the base working directory of the en
+Make sure your working directory is always the base directory of the entire repository, which should be ./EGT309-TeamJunHoe when cloned. All commands are structured around running them from the base directory.
 
 ### EDA
 Run `docker build --no-cache -t eda -f Dockerfile-eda .` to build the jupyter server image
