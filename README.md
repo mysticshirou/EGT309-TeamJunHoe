@@ -43,6 +43,8 @@ EGT309-TEAMJUNHOE
 ```
 ## Section C - Instructions
 
+Make sure your working directory is always the base working directory of the en
+
 ### EDA
 Run `docker build --no-cache -t eda -f Dockerfile-eda .` to build the jupyter server image
 Run `docker run -d -p 8888:8888 eda` to start the jupyter server and use it as the jupyter kernel in your preferred IDE
@@ -144,8 +146,6 @@ The Occupation column had a large number of unique classes, which resulted in so
 ### Data entry error handling
 The Campaign Calls column featured many data entry errors, with many of its values being negative numbers. This was handled through statistical analysis with the Kolmogorov-Smirnov test (2 sample K-S test), which helped to prove that the negative and positive sample spaces were likely from the same distribution. Hence, the final decision of moving the negative numbers into the positive space throught the absolute function.
 
-### Feature analysis
-
 ## Section F - Data Processing Overview
 
 This section primarily explains the (default) main data processing steps for each column of the dataset.
@@ -178,9 +178,9 @@ Our final choice was XGBoost due to its baseline powerful performance and robust
 ### Main metrics for model evaluation:
 | Ranking | Metric | Definition | Formula | Reasoning |
 | :---: | :---: | :--- | :--- | :--- |
-| 1 | Weighted Geometric Mean (GMS) | Weighted geometric mean of recall and specificity that favors recall | $\( \text{GMS} = \text{Recall}^{0.6} \times \text{Specificity}^{0.4} \)$ | Maximize recall while ensuring specificity is not fully abandoned |
-| 2 | Recall | How many of total positives were correctly identified as positives | $\( \text{Recall} = \frac{\text{TP}}{\text{TP + FN}} \)$ | The cost of not selecting (false negative) a customer is greater than the cost of getting a false positive |
-| 3 | Specificity | How many of total negatives were correctly identified as negatives | $\( \text{Specificity} = \frac{\text{TN}}{\text{TN + FP}} \)$ | Specificity needs to be reasonable such that the bank can confidently filter out customers identified as unlikely to subscribe |
+| 1 | Weighted Geometric Mean (GMS) | Weighted geometric mean of recall and specificity that favors recall | $ \text{GMS} = \text{Recall}^{0.6} \times \text{Specificity}^{0.4} $ | Maximize recall while ensuring specificity is not fully abandoned |
+| 2 | Recall | How many of total positives were correctly identified as positives | $ \text{Recall} = \frac{\text{TP}}{\text{TP + FN}} $ | The cost of not selecting (false negative) a customer is greater than the cost of getting a false positive |
+| 3 | Specificity | How many of total negatives were correctly identified as negatives | $ \text{Specificity} = \frac{\text{TN}}{\text{TN + FP}} $ | Specificity needs to be reasonable such that the bank can confidently filter out customers identified as unlikely to subscribe |
 
 
 ## Section I - Other Considerations
