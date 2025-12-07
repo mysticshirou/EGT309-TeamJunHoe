@@ -159,6 +159,9 @@ The Occupation column had a large number of unique classes, which resulted in so
 ### Data entry error handling
 The Campaign Calls column featured many data entry errors, with many of its values being negative numbers. This was handled through statistical analysis with the Kolmogorov-Smirnov test (2 sample K-S test), which helped to prove that the negative and positive sample spaces were likely from the same distribution. Hence, the final decision of moving the negative numbers into the positive space throught the absolute function.
 
+### Feature analysis
+Bivariate analysis between each feature and the target was performed to understand the relationship between them. Some features like previously_contacted displayed very strong performance in helping distinguish whether the client subscribed or not, while other features like personal_loan showed little to no ability to help predict the target. Using this, a naive ranking of features was created so that the top N features could be selected in the pipeline in case trimming features that have less correlation would be helpful.
+
 ## Section F - Data Processing Overview
 
 This section primarily explains the (default) main data processing steps for each column of the dataset.
@@ -194,17 +197,40 @@ Our final choice was XGBoost due to its baseline powerful performance and robust
 | 1 | Weighted Geometric Mean (GMS) | Weighted geometric mean of recall and specificity that favors recall | `GMS = Recall^0.6 * Specificity^0.4` | Maximize recall while ensuring specificity is not fully abandoned |
 | 2 | Recall | How many of total positives were correctly identified as positives | `Recall = TP / (TP + FN)` | The cost of not selecting (false negative) a customer is greater than the cost of getting a false positive |
 | 3 | Specificity | How many of total negatives were correctly identified as negatives | `Specificity = TN / (TN + FP)` | Specificity needs to be reasonable such that the bank can confidently filter out customers identified as unlikely to subscribe |
+| 4 | AUC (Area Under the ROC Curve) | Measures model’s ability to distinguish between classes across all thresholds | N/A (calculated from ROC curve) | Since threshold tuning is done with GMS, AUC is used to measure model performance independently of threshold tuning
 
+### Evaluation of CatBoost
+"weighted_gmean": 0.6908271380513155,
+"sensitivity (recall)": 0.7370689655172413,
+"specificity": 0.6268466168156119,
+"roc_auc": 0.7381113724553006
 
+CatBoost performs the best, slightly edging out LightGBM with a slightly higher GMS. This is most likely due to CatBoost being specialized at dealing with categorical columns. CatBoost seems to show better performance the more features it has, so a follow up to improving performance might be to come up with more engineered columns.
+
+### Evaluation of LightGBM
+"weighted_gmean": 0.6863668183792349,
+"sensitivity (recall)": 0.728448275862069,
+"specificity": 0.6277585263541857,
+"roc_auc": 0.7430604470243449
+
+LightGBM interestingly has a higher AUC score despite a lower GMS, meaning that it is better at discriminating classes overall but benefits less from threshold tuning than CatBoost. LightGBM's advantage is its raw training speed, and the best follow up for it would be to increase the search space for hyperparameter tuning.
+
+### Evaluation of XGBoost
+"weighted_gmean": 0.6700789701560874,
+"sensitivity (recall)": 0.7112068965517241,
+"specificity": 0.6128032099215758,
+"roc_auc": 0.7248749268900111
+
+XGBoost falls one step short compared to CatBoost and LightGBM across all metrics, but still boasts competitive performance overall. XGBoost would benefit from more careful hyperparameter tuning beyond just simple automated search spaces as it has a wide array of hyperparameters that can easily swing model performance up and down.
+
+### Other follow-up suggestions
+- Ensembling: CatBoost and LightGBM show different strengths, which ensembling can leverage to increase performance via voting.
+- Preventing overfitting: While CatBoost trains using a validation set to prevent overfitting, LightGBM and XGBoost do not. Adding methods to use the model with the best validation score instead of the final model after fully training might benefit them.
 
 ## Section I - Other Considerations
 
-### Model Drift
-Over time, predictions are likely to get less and less accurate on newer customers. It is important to monitor metrics to ensure that model retraining is performed when necessary.
+### Further Threshold tuning
+The model currently will predict more positives, which prevents customers likely to subscribe from being falsely classified as negative but also leads to more false positives and waster resources. The threshold should be tuned using the GMS based on which is more costly or how many resources the bank is willing to allocate in future campaigns.
 
-### Changing features
-While certain features like Age are independent to the banks' events, other features like Campaign Calls that were fully reliant on the one campaign that the bank used to collect data from may change drastically or be removed as a feature. Similarily, retraining will be necessary in this case.
-
-### Interpreting results
-While easy to set a clear threshold to separate customers between two distinct classes as 'subscribed' and 'not subscribed', it might be more useful to create multiple bins corresponding to their probability of subscribing, to add the possibility of contacting customers proportionally to their chance of subscribing and enhancing resource allocation while not automatically discarding a large amount of customers.
-
+### Binning probabilities into smaller target classes
+While the model is a binary classification model that predicts 0 or 1, it still predicts raw probabilities first that the bank can actually use to bin them into smaller categories like 'unlikely', 'neutral', and 'very likely'. This gives the bank more control over the amount of customers they want to call, an example being they can call everyone in the 'very likely' category first and use leftover time to call customers in the 'neutral' category, instead of immediately discarding all customers even if they were predicted to be a much higher value that was just below the threshold.
