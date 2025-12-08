@@ -7,6 +7,7 @@ from skopt.space import Integer, Categorical, Real
 from typing import Any
 
 def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
+    # DARREN
     """
     Converting search space defined in parameters.yml into a proper BayesSearchCV search space
     
@@ -39,6 +40,7 @@ def read_bs_search_space(search_dict: dict[str, list]) -> dict[str, Any]:
     return search_space
 
 def generate_report(y_test, y_prob, params):
+    # HARISH
     """
     Generates the evaluation report
 

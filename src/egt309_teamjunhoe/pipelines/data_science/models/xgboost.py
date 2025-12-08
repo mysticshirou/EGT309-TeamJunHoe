@@ -11,6 +11,7 @@ import pandas as pd
 
 @register_model("xg_boost")
 class XGBoost(Model):
+    # HARISH
     @staticmethod
     def train(X_train, y_train, params):
         if params.get("xgboost_auto_optimize") is True:

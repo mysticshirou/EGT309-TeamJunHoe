@@ -2,6 +2,7 @@ from typing import Protocol, Any
 import pandas as pd
 from matplotlib.figure import Figure
 
+# HARISH
 class Model(Protocol):
     # train method should return the model and the dictionary of all model parameters
     @staticmethod

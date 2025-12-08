@@ -10,6 +10,7 @@ import seaborn as sns
 
 @register_model("knn")
 class KNN(Model):
+    # DARREN
     @staticmethod
     def train(X_train, y_train, params):
         search_space = read_bs_search_space(params.get("knn_bayes_search_search_space", {}))

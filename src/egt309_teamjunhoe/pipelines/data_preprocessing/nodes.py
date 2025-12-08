@@ -13,6 +13,7 @@ from imblearn.over_sampling import RandomOverSampler
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _clean_initial (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Basic initial cleaning (drop ids & rename columns)
     column_renames = {name : name.lower().replace(" ", "_") for name in intermediate_data.columns}
     intermediate_data.rename(columns=column_renames, inplace=True)
@@ -21,6 +22,7 @@ def _clean_initial (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     return intermediate_data
 
 def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Converting age from str to int
     intermediate_data.age = intermediate_data.age.map(lambda x: int(x.split(" ")[0]))
     # Set >90 years old to -1
@@ -49,6 +51,7 @@ def _clean_age_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
     return intermediate_data
 
 def _clean_occupation_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     if params.get("generalize", None) == True:
         # Generalise column to employed (yes) / unemployed (no)
         intermediate_data.occupation = intermediate_data.occupation.apply(
@@ -57,20 +60,24 @@ def _clean_occupation_column (intermediate_data: pd.DataFrame, params) -> pd.Dat
     return intermediate_data
 
 def _clean_marital_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # No data cleaning needed, as per EDA
     return intermediate_data
 
 def _clean_education_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # No data cleaning needed, only slight changes to category naming scheme
     intermediate_data.education_level = intermediate_data.education_level.map(lambda cat: cat.lower().replace(".", "_"))
     return intermediate_data
 
 def _clean_credit_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Combine yes and no into known as per EDA
     intermediate_data.credit_default = intermediate_data.credit_default.map(lambda x: x if x == "unknown" else "known")
     return intermediate_data
 
 def _clean_contact_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Combining categories: Cell & cellular -> cellular | Telephone & telephone -> telephone
     intermediate_data.contact_method = intermediate_data.contact_method.map(
         lambda x: "cellular" if x[0].lower() == "c" else "telephone"
@@ -78,11 +85,13 @@ def _clean_contact_column (intermediate_data: pd.DataFrame, params) -> pd.DataFr
     return intermediate_data
 
 def _clean_campaign_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Converting all negative numbers to positive numbers as per EDA
     intermediate_data.campaign_calls = intermediate_data.campaign_calls.abs()
     return intermediate_data
 
 def _clean_pdays_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # HARISH
     if params.get("create_previously_contacted", None) == True:
         # Create previously contacted column (denotes if person has been contacted recently (boolean))
         intermediate_data.insert(
@@ -93,6 +102,7 @@ def _clean_pdays_column (intermediate_data: pd.DataFrame, params) -> pd.DataFram
     return intermediate_data
 
 def _clean_housing_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # HARISH
     match params.get("housing_loan_cleaning"):
         case "fill": 
             # Change all null values to "missing" (best)
@@ -103,6 +113,7 @@ def _clean_housing_column (intermediate_data: pd.DataFrame, params) -> pd.DataFr
     return intermediate_data
 
 def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # HARISH
     # Different methods based on what is chosen in parameters.yml
     match params.get("personal_loan_cleaning"):
         case "fill":
@@ -117,11 +128,13 @@ def _clean_personal_column (intermediate_data: pd.DataFrame, params) -> pd.DataF
     return intermediate_data
 
 def _clean_subscriber_column (intermediate_data: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Convert to boolean
     intermediate_data.subscription_status = intermediate_data.subscription_status.map(lambda x: True if x == "yes" else False)
     return intermediate_data
 
 def _normalize_dataset(dataset: pd.DataFrame, params):
+    # HARISH
     # Normalise dataset values (int, float) to 0.0 - 1.0
     if params.get("normalize", None) == False:
         return dataset
@@ -142,6 +155,7 @@ def _normalize_dataset(dataset: pd.DataFrame, params):
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _feature_selection (intermediate_data: pd.DataFrame, params):
+    # HARISH
     # Select features based on ranking and n features to select as configured in params
     ranking: list = params.get("ranking")
     top_n_features: int = params.get("top_n_features")
@@ -156,12 +170,14 @@ def _feature_selection (intermediate_data: pd.DataFrame, params):
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def _one_hot_encode (intermediate_data: pd.DataFrame):
+    # DARREN
     return pd.get_dummies(
         intermediate_data, 
         columns=[col for col in intermediate_data.columns if intermediate_data[col].dtype == "object"]
     )
 
 def _label_encode (intermediate_data: pd.DataFrame):
+    # DARREN
     le = LabelEncoder()
     for col in intermediate_data.columns:
         if intermediate_data[col].dtype == "object":
@@ -180,6 +196,7 @@ def _resampled_split(
     sampling: str = None,
     sampling_strategy: float = 1.0
 ):
+    # HARISH
     # Shuffle dataset
     intermediate_data = intermediate_data.sample(frac=1, random_state=random_state).reset_index(drop=True)
 
@@ -209,6 +226,7 @@ def _resampled_split(
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
+    # DARREN
     # Run the data through all the data cleaning functions
     # Feature Columns
     intermediate_data = _clean_initial(dataset, params)
@@ -232,10 +250,12 @@ def clean_dataset (dataset: pd.DataFrame, params) -> pd.DataFrame:
     return normalized_data
 
 def feature_selection_dataset (dataset: pd.DataFrame, params):
+    # HARISH
     # Select features as per configuration
     return _feature_selection(dataset, params)
 
 def encode_dataset (dataset: pd.DataFrame, params):
+    # DARREN
     # Encode dataset as per configuration
     encoding_type = params.get("encode")
     match encoding_type:
@@ -250,6 +270,7 @@ def encode_dataset (dataset: pd.DataFrame, params):
 
 
 def split_dataset(dataset: pd.DataFrame, params: dict):
+    # HARISH
     # Split dataset as per configuration
     test_size = params.get("test_size")
     method = params.get("imbalance_handling", None)

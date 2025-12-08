@@ -10,6 +10,7 @@ import seaborn as sns
 
 @register_model("ada_boost")
 class AdaBoost(Model):
+    # DARREN
     @staticmethod
     def train(X_train, y_train, params):
         if params.get("ada_boost_auto_optimize") == True:

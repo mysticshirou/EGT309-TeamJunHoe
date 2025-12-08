@@ -1,3 +1,4 @@
+# HARISH
 # Initializes an empty dictionary to store key-value pairs of names and classes 
 MODEL_REGISTRY: dict[str, type] = {}
 

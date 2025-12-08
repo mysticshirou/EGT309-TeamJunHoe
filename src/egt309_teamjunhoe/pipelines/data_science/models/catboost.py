@@ -12,6 +12,7 @@ import seaborn as sns
 
 @register_model("cat_boost")
 class CatBoost(Model):
+    # HARISH
     @staticmethod
     def train(X_train, y_train, params):
         combined_df = X_train.copy()
