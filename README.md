@@ -2,14 +2,14 @@
 
 ## Section A - Contributors
 
-### Foo Tun Wei Darren - 231725Z@mymail.nyp.edu.sg
+### Darren
 - Data cleaning & preprocessing: Age, Campaign Calls, Education Level, Contact Method, Occupation
 - Feature analysis: Univariate analysis for above columns
 - Kedro pipeline development: Overall data Preprocessing pipeline, Overall data Science pipeline, Configuration approach
 - Model tuning methods: Grid search, Bayesian optimisation
 - Model evaluation methods: Confusion matrix visualisation
 
-### Harish Kanna - 230268R@mymail.nyp.edu.sg
+### Harish
 - Data cleaning & preprocessing: Marital Status, Previous Contact Days, Credit Default, Personal Loan, Housing Loan
 - Feature analysis: Bivariate analysis, Feature selection, Univariate analysis for above columns
 - Kedro pipeline development: Model registry, Model interface (Structural Subtyping)
